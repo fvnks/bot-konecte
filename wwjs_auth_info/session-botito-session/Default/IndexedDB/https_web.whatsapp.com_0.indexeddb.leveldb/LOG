@@ -1,0 +1,23 @@
+2025/06/28-01:49:17.661 13c3b5 Reusing MANIFEST /home/rodrigod/proyectos-nodejs/botito/wwjs_auth_info/session-botito-session/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/06/28-01:49:17.662 13c3b5 Recovering log #1719
+2025/06/28-01:49:17.750 13c3b5 Reusing old log /home/rodrigod/proyectos-nodejs/botito/wwjs_auth_info/session-botito-session/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/001719.log 
+2025/06/28-01:49:26.020 13c417 Level-0 table #1729: started
+2025/06/28-01:49:26.049 13c417 Level-0 table #1729: 399114 bytes OK
+2025/06/28-01:49:26.055 13c417 Delete type=0 #1719
+2025/06/28-01:49:26.056 13c417 Manual compaction at level-0 from '\x00\x8a\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x8b\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/06/28-01:49:37.594 13c41e Compacting 1@1 + 6@2 files
+2025/06/28-01:49:37.878 13c41e Generated table #1730@1: 87272 keys, 2236682 bytes
+2025/06/28-01:49:38.066 13c41e Generated table #1731@1: 23916 keys, 2202922 bytes
+2025/06/28-01:49:38.262 13c41e Generated table #1732@1: 22210 keys, 2187960 bytes
+2025/06/28-01:49:38.529 13c41e Generated table #1733@1: 32615 keys, 2161849 bytes
+2025/06/28-01:49:38.929 13c41e Generated table #1734@1: 112004 keys, 2265798 bytes
+2025/06/28-01:49:39.007 13c41e Generated table #1735@1: 28298 keys, 603866 bytes
+2025/06/28-01:49:39.007 13c41e Compacted 1@1 + 6@2 files => 11659077 bytes
+2025/06/28-01:49:39.012 13c41e compacted to: files[ 0 0 6 0 0 0 0 ]
+2025/06/28-01:49:39.013 13c41e Delete type=2 #1723
+2025/06/28-01:49:39.013 13c41e Delete type=2 #1721
+2025/06/28-01:49:39.013 13c41e Delete type=2 #1722
+2025/06/28-01:49:39.013 13c41e Delete type=2 #1729
+2025/06/28-01:49:39.013 13c41e Delete type=2 #1724
+2025/06/28-01:49:39.013 13c41e Delete type=2 #1726
+2025/06/28-01:49:39.013 13c41e Delete type=2 #1725

@@ -1,0 +1,18 @@
+[Unit]
+Description=Botito WhatsApp Bot
+After=network.target
+
+[Service]
+Type=simple
+User=rodrigod
+WorkingDirectory=/home/rodrigod/botito
+ExecStart=/usr/bin/node server.js
+Restart=always
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=botito
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target 

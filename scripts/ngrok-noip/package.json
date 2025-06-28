@@ -1,0 +1,17 @@
+{
+  "name": "ngrok-noip-integration",
+  "version": "1.0.0",
+  "description": "Integración entre ngrok y No-IP para mantener una URL fija",
+  "main": "start.js",
+  "scripts": {
+    "start": "node start.js",
+    "setup": "node utils/setup-pm2.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "axios": "^1.10.0",
+    "express": "^4.19.2",
+    "http-proxy-middleware": "^2.0.6",
+    "ngrok": "^5.0.0-beta.2"
+  }
+}

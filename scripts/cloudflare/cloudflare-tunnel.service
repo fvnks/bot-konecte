@@ -1,0 +1,16 @@
+[Unit]
+Description=Cloudflare Tunnel for Botito WhatsApp Bot
+After=network.target
+
+[Service]
+Type=simple
+User=rodrigod
+WorkingDirectory=/home/rodrigod/proyectos-nodejs/botito
+ExecStart=/usr/bin/cloudflared tunnel --url http://localhost:3001
+Restart=on-failure
+RestartSec=5
+StartLimitInterval=60s
+StartLimitBurst=3
+
+[Install]
+WantedBy=multi-user.target 

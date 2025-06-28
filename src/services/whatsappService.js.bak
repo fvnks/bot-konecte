@@ -1,0 +1,1571 @@
+require('dotenv').config();
+const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
+const qrcode = require('qrcode-terminal');
+const fs = require('fs');
+const path = require('path');
+const AuthorizedUser = require('../models/AuthorizedUser');
+const IgnoredUser = require('../models/IgnoredUser');
+const geminiService = require('./geminiService');
+const googleSheetsService = require('./googleSheetsService');
+const { handleWhatsappGroupMessage } = require('../../services/whatsappGroupMessageHandler');
+const { handleCommand } = require('./commandHandler');
+const axios = require('axios');
+const { initializeAlertService, findMatchingAlertsAndNotify } = require('./alertService');
+const User = require('../models/User');
+const { normalizeText, normalizeAndLookupLocation } = require('./locationService');
+const transcriptionService = require('./transcriptionService'); // Importar el nuevo servicio
+const puppeteer = require('puppeteer');
+const { SEARCH_TEMPLATE, OFFER_TEMPLATE, SEARCH_INTRO, SEARCH_FORMAT, OFFER_INTRO, OFFER_FORMAT } = require('./messageTemplates');
+const apiSync = require('./api-sync');
+const konecteWebhookController = require('../controllers/konecteWebhookController');
+
+let client;
+
+// Cargar IDs de administradores desde .env
+const ADMIN_SENDER_IDS = process.env.ADMIN_SENDER_IDS ? process.env.ADMIN_SENDER_IDS.split(',').map(id => id.trim()) : [];
+if (ADMIN_SENDER_IDS.length > 0) {
+    console.log('INFO: IDs de administradores cargados:', ADMIN_SENDER_IDS);
+} else {
+    console.warn('ADVERTENCIA: No se han definido ADMIN_SENDER_IDS en el archivo .env. Los comandos de administrador no estarán disponibles.');
+}
+
+// Objeto en memoria para manejar confirmaciones pendientes de activación de alertas
+const userPendingAlertConfirmation = {};
+
+// Objeto para rastrear a quién ya se le ha enviado el mensaje de bienvenida
+const welcomeMessageSent = {};
+
+// NUEVO: Objeto para acumular mensajes consecutivos del usuario
+const userMessageAccumulator = {};
+
+// Objeto para manejar el estado de la conversación por usuario
+const userSessionState = {};
+
+// --- INICIO DE LA NUEVA LÓGICA DE BÚSQUEDA INTELIGENTE ---
+// Función para manejar la búsqueda de propiedades con IA
+async function handleNaturalLanguageSearch(senderJid, messageContent) {
+    try {
+        console.log(`INFO: Procesando búsqueda en lenguaje natural: "${messageContent.substring(0, 100)}${messageContent.length > 100 ? '...' : ''}"`);
+        
+        // Analizar el mensaje para extraer criterios de búsqueda
+        const searchCriteria = await extractSearchCriteria(messageContent);
+        
+        if (!searchCriteria || Object.keys(searchCriteria).length === 0) {
+            await client.sendMessage(senderJid, '🤔 No pude identificar criterios de búsqueda claros en tu mensaje. ¿Podrías ser más específico sobre lo que estás buscando? Por ejemplo: "Busco departamento de 2 dormitorios, 1 baño y terraza".');
+            return true; // Cambiado de false a true para cortar el flujo y evitar mensajes duplicados
+        }
+        
+        console.log('INFO: Criterios de búsqueda extraídos:', JSON.stringify(searchCriteria));
+        
+        // Obtener la configuración de la hoja de cálculo
+        const sheetConfig = await googleSheetsService.getMainSheetConfig();
+        if (!sheetConfig || !sheetConfig.spreadsheetId) {
+            await client.sendMessage(senderJid, '❌ Lo siento, pero no puedo acceder a la base de datos de propiedades en este momento. Por favor, inténtalo más tarde.');
+            return false;
+        }
+        
+        // Buscar propiedades que coincidan con los criterios
+        const results = await googleSheetsService.findProperties(searchCriteria);
+        
+        // Verificar si los resultados son un string (mensaje de error o sin resultados)
+        if (typeof results === 'string') {
+            // Si es un mensaje que indica que no hay resultados
+            if (results.includes('No encontré propiedades')) {
+                // Guardar los criterios de búsqueda para usarlos si el usuario confirma crear una alerta
+                userSessionState[senderJid] = {
+                    ...userSessionState[senderJid] || {},
+                    step: 'awaiting_alert_confirmation',
+                    pendingAlertData: {
+                        ...searchCriteria,
+                        senderId: senderJid
+                    }
+                };
+                
+                // Enviar el mensaje tal como viene de la función findProperties
+                await client.sendMessage(senderJid, results);
+            } else {
+                // Si es otro tipo de mensaje, enviarlo tal cual
+                await client.sendMessage(senderJid, results);
+            }
+            return true;
+        }
+        
+        // Verificar si los resultados son un array
+        if (!Array.isArray(results) || results.length === 0) {
+            const noResultsMessage = `📊 No encontré propiedades que coincidan exactamente con tus criterios de búsqueda${searchCriteria.tipoOperacion ? ` para ${searchCriteria.tipoOperacion}` : ''}. 
+
+¿Te gustaría guardar esta búsqueda como una alerta? Así te notificaré cuando aparezcan propiedades que coincidan con tus criterios. 🔔
+
+Responde *sí* para crear la alerta o *no* para finalizar.`;
+            
+            await client.sendMessage(senderJid, noResultsMessage);
+            
+            // Guardar los criterios de búsqueda para usarlos si el usuario confirma crear una alerta
+            userSessionState[senderJid] = {
+                ...userSessionState[senderJid] || {},
+                step: 'awaiting_alert_confirmation',
+                pendingAlertData: {
+                    ...searchCriteria,
+                    senderId: senderJid
+                }
+            };
+            
+            return true;
+        }
+        
+        // Formatear y enviar resultados
+        const maxResultsToShow = 5;
+        const totalResults = results.length;
+        const resultsToShow = results.slice(0, maxResultsToShow);
+        
+        let resultsMessage = `🏠 *Encontré ${totalResults} propiedades que coinciden con tu búsqueda:*\n\n`;
+        
+        resultsToShow.forEach((property, index) => {
+            resultsMessage += `*Propiedad ${index + 1}:*\n`;
+            
+            // Agregar detalles de la propiedad según las columnas disponibles
+            if (property.tipoPropiedad) resultsMessage += `• Tipo: ${property.tipoPropiedad} 🏢\n`;
+            if (property.tipoOperacion) resultsMessage += `• Operación: ${property.tipoOperacion} 📋\n`;
+            if (property.ubicacion) resultsMessage += `• Ubicación: ${property.ubicacion} 📍\n`;
+            if (property.precio) resultsMessage += `• Precio: ${property.precio} 💰\n`;
+            if (property.dormitorios) resultsMessage += `• Dormitorios: ${property.dormitorios} 🛏️\n`;
+            if (property.banos) resultsMessage += `• Baños: ${property.banos} 🚿\n`;
+            if (property.metrosCuadrados) resultsMessage += `• Superficie: ${property.metrosCuadrados} m² 📐\n`;
+            if (property.contacto) resultsMessage += `• Contacto: ${property.contacto} 📞\n`;
+            if (property.link) resultsMessage += `• Más info: ${property.link} 🔗\n`;
+            
+            resultsMessage += '\n';
+        });
+        
+        // Si hay más resultados de los que se muestran
+        if (totalResults > maxResultsToShow) {
+            resultsMessage += `*...y ${totalResults - maxResultsToShow} propiedades más.*\n\n`;
+        }
+        
+        // Agregar pregunta sobre guardar la búsqueda como alerta
+        resultsMessage += `¿Te gustaría guardar esta búsqueda como una alerta? Así te notificaré cuando aparezcan nuevas propiedades que coincidan con tus criterios. 🔔\n\nResponde *sí* para crear la alerta o *no* para finalizar.`;
+        
+        await client.sendMessage(senderJid, resultsMessage);
+        
+        // Guardar los criterios de búsqueda para usarlos si el usuario confirma crear una alerta
+        userSessionState[senderJid] = {
+            ...userSessionState[senderJid] || {},
+            step: 'awaiting_alert_confirmation',
+            pendingAlertData: {
+                ...searchCriteria,
+                senderId: senderJid
+            }
+        };
+        
+        return true;
+    } catch (error) {
+        console.error('ERROR: Error al procesar búsqueda en lenguaje natural:', error);
+        await client.sendMessage(senderJid, '❌ Lo siento, pero ocurrió un error al procesar tu búsqueda. Por favor, inténtalo nuevamente con criterios más claros.');
+        return false;
+    }
+}
+
+// Función para extraer criterios de búsqueda de un mensaje usando Gemini
+async function extractSearchCriteria(messageText) {
+    try {
+        // Verificar si el mensaje parece una búsqueda de propiedad o una oferta
+        const isBuscoMessage = messageText.toLowerCase().includes('busco');
+        const isOfrezcoMessage = messageText.toLowerCase().includes('ofrezco');
+        
+        if (!isBuscoMessage && !isOfrezcoMessage) {
+            return null;
+        }
+        
+        console.log('INFO: Extrayendo criterios de búsqueda con Gemini');
+        
+        // Usar Gemini para extraer los detalles de la propiedad
+        const extractedData = await geminiService.extractPropertyDetails(messageText);
+        
+        if (!extractedData || extractedData.error) {
+            console.error('ERROR: Error al extraer detalles con Gemini:', extractedData?.error || 'Respuesta vacía');
+            return null;
+        }
+        
+        // Mapear los datos extraídos a los criterios de búsqueda
+        const searchCriteria = {
+            accion: extractedData.accion || 'busco',
+            tipoPropiedad: extractedData.tipoPropiedad || '',
+            tipoOperacion: extractedData.tipoOperacion || '',
+            region: extractedData.region || '',
+            comuna: extractedData.comuna || '',
+            dormitorios: extractedData.numDormitorios || '',
+            banos: extractedData.numBanos || '',
+            presupuesto: extractedData.valor || ''
+        };
+        
+        // Registrar los criterios extraídos para depuración
+        console.log('DEBUG: Criterios extraídos del mensaje:', JSON.stringify(searchCriteria));
+        
+        return searchCriteria;
+    } catch (error) {
+        console.error('ERROR: Error al extraer criterios de búsqueda:', error);
+        return null;
+    }
+}
+// --- FIN DE LA NUEVA LÓGICA DE BÚSQUEDA INTELIGENTE ---
+
+// NUEVO: Función para determinar si un mensaje es una solicitud de más detalles
+function isAskingForMoreDetails(message) {
+    const patterns = [
+        /¿qué tipo de (?:departamento|casa|propiedad) buscas\?/i,
+        /¿cuántos dormitorios necesitas\?/i,
+        /¿tienes algún presupuesto en mente\?/i,
+        /¿en qué comuna o sector (?:te gustaría vivir|buscas)\?/i,
+        /necesito un poco más de información/i,
+        /cuanta más información me des/i,
+        /para ayudarte a encontrar/i,
+        /¿qué características buscas/i,
+        /¿qué rango de precios/i,
+        /¿qué tipo de comodidades/i,
+        /para ayudarte mejor/i,
+        /¿podrías indicarme/i,
+        /¿necesitas información sobre/i
+    ];
+    
+    return patterns.some(pattern => pattern.test(message));
+}
+
+// NUEVO: Función para determinar si un mensaje parece una continuación de una búsqueda
+function isContinuationOfSearch(message) {
+    // Patrones que indican que el mensaje es una respuesta con más detalles
+    const patterns = [
+        /^\d+\s*(?:dormitorio|dormitorios|dorm|habitaci[oó]n|habitaciones|baño|baños|amb|ambiente|ambientes)/i,
+        /^(?:con|tiene|quiero|necesito)\s+\d+\s*(?:dormitorio|dormitorios|dorm|habitaci[oó]n|habitaciones|baño|baños)/i,
+        /^(?:hasta|máximo|maximo|max|aproximadamente|aprox)\s+[0-9.,]+\s*(?:uf|clp|\$|pesos|millones)/i,
+        /^(?:en|cerca de|por|sector)\s+[a-zá-úñ\s]+$/i, // Posible respuesta de comuna/sector
+        /^(?:amoblado|sin amueblar|con estacionamiento|con bodega|con terraza|con balcón|con piscina)/i,
+        /^(?:para|desde|hasta)\s+\d+\s*(?:personas|adultos|niños|mascotas)/i,
+        /^(?:santiago|providencia|las condes|ñuñoa|vitacura|la florida|maipú|san miguel)/i, // Comunas chilenas comunes
+        /^(?:arriendo|compra|venta|alquiler)/i,
+        /^(?:casa|depto|departamento|oficina|local|terreno|parcela)/i
+    ];
+    
+    // Si el mensaje es muy corto (1-3 palabras), es más probable que sea una continuación
+    const wordCount = message.trim().split(/\s+/).length;
+    const isShortMessage = wordCount <= 3;
+    
+    // Verificar si el mensaje contiene nombres de comunas chilenas comunes
+    const comunasChilenas = ['santiago', 'providencia', 'las condes', 'ñuñoa', 'vitacura', 
+                           'la florida', 'maipú', 'san miguel', 'la reina', 'macul', 
+                           'peñalolén', 'puente alto', 'quilicura', 'recoleta', 'renca'];
+    const containsChileanCommune = comunasChilenas.some(comuna => 
+        message.toLowerCase().includes(comuna));
+    
+    return patterns.some(pattern => pattern.test(message)) || 
+           isShortMessage || 
+           containsChileanCommune;
+}
+
+// Función para inicializar el cliente de WhatsApp Web JS
+function initWhatsAppClient() {
+    return new Promise((resolve, reject) => {
+    console.log('Inicializando cliente de WhatsApp Web JS...');
+
+        // Usar un ID de cliente fijo para mantener la sesión persistente
+        const sessionId = 'botito-persistente';
+        
+        // Usar el directorio del proyecto para la sesión
+        const sessionDir = path.join(process.cwd(), 'wwjs_auth_info');
+        
+        // Asegurarse de que el directorio de sesión exista y tenga los permisos correctos
+        if (!fs.existsSync(sessionDir)) {
+            try {
+                fs.mkdirSync(sessionDir, { recursive: true, mode: 0o777 });
+                console.log(`Directorio de sesión creado en: ${sessionDir}`);
+            } catch (err) {
+                console.error(`Error al crear directorio de sesión: ${err.message}`);
+            }
+        } else {
+            // Asegurarse de que el directorio tenga los permisos correctos
+            try {
+                fs.chmodSync(sessionDir, 0o777);
+                console.log(`Permisos del directorio de sesión actualizados: ${sessionDir}`);
+            } catch (err) {
+                console.error(`Error al actualizar permisos del directorio de sesión: ${err.message}`);
+            }
+        }
+        
+        // Verificar si existe una sesión anterior
+        const sessionFolder = path.join(sessionDir, `session-${sessionId}`);
+        const sessionExists = fs.existsSync(sessionFolder) && fs.readdirSync(sessionFolder).length > 0;
+        
+        console.log(`INFO: ${sessionExists ? 'Sesión existente encontrada' : 'No se encontró sesión existente'}. Usando ID de sesión: ${sessionId}`);
+        
+        // Configuración simplificada de Puppeteer para usar el binario de Chromium del sistema
+        const puppeteerOptions = {
+            executablePath: '/usr/bin/chromium-browser', // Usar el Chromium instalado en el sistema
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-gpu'
+            ],
+            headless: true,
+            ignoreHTTPSErrors: true
+        };
+
+        // Crear el cliente con la configuración adecuada
+        client = new Client({
+            authStrategy: new LocalAuth({
+                clientId: sessionId,
+                dataPath: sessionDir
+            }),
+            puppeteer: puppeteerOptions,
+            qrMaxRetries: 5,
+            takeoverOnConflict: true
+        });
+
+        // Registrar eventos del cliente
+        client.on('qr', (qr) => {
+            console.log('Código QR recibido. Por favor, escanea con WhatsApp:');
+            qrcode.generate(qr, { small: true });
+            
+            // Guardar el QR en un archivo para acceso remoto si es necesario
+            try {
+            fs.writeFileSync(path.join(process.cwd(), 'last_qr.txt'), qr);
+            console.log(`QR guardado en ${path.join(process.cwd(), 'last_qr.txt')}`);
+            } catch (err) {
+                console.error(`Error al guardar el código QR: ${err.message}`);
+            }
+        });
+
+        client.on('authenticated', () => {
+            console.log('Cliente autenticado correctamente.');
+            // Limpiar el archivo QR después de la autenticación
+            try {
+                if (fs.existsSync(path.join(process.cwd(), 'last_qr.txt'))) {
+                    fs.unlinkSync(path.join(process.cwd(), 'last_qr.txt'));
+                }
+            } catch (err) {
+                console.error('Error al eliminar archivo QR:', err);
+            }
+        });
+
+        client.on('ready', () => {
+            console.log('Cliente de WhatsApp listo y conectado.');
+            
+            // Configurar manejo de mensajes de grupo
+            console.log('Configurando manejo de mensajes de grupos...');
+            
+            // Registrar grupos a los que pertenece el bot
+            (async () => {
+                try {
+                    const chats = await client.getChats();
+                    const groups = chats.filter(chat => chat.isGroup);
+                    console.log(`Bot presente en ${groups.length} grupos:`);
+                    groups.forEach(group => {
+                        console.log(`- ${group.name} (${group.id._serialized})`);
+                    });
+                } catch (error) {
+                    console.error('Error al listar grupos:', error);
+                }
+            })();
+            
+            // Inicializar el servicio de alertas
+            initializeAlertService(client);
+            
+            // Inicializar la sincronización con la API de Konecte
+            apiSync.initApiSync(client);
+            
+            // Verificar acceso a Google Sheets
+            (async () => {
+                try {
+                    console.log('INFO: Verificando acceso a Google Sheets al iniciar...');
+                    const mainConfig = await googleSheetsService.getMainSheetConfig();
+                    if (mainConfig && mainConfig.spreadsheetId && mainConfig.sheetName) {
+                        try {
+                            // Intentar leer datos para verificar el acceso
+                            const testData = await googleSheetsService.readData(mainConfig.spreadsheetId, `${mainConfig.sheetName}!A1:A1`);
+                            console.log(`SUCCESS: Acceso a Google Sheet '${mainConfig.sheetName}' verificado correctamente.`);
+                        } catch (sheetError) {
+                            console.error(`ERROR: Falló la verificación de acceso a Google Sheets: ${sheetError.message}`);
+                        }
+                    } else {
+                        console.error('ERROR: No se pudo obtener la configuración principal de Google Sheet para la verificación de acceso.');
+                    }
+                } catch (error) {
+                    console.error('Error al verificar acceso a Google Sheets:', error);
+                }
+            })();
+            
+            resolve(client); // Resolver la promesa cuando el cliente esté LISTO
+        });
+
+        client.on('auth_failure', (msg) => {
+            console.error('Fallo de autenticación de WhatsApp:', msg);
+            // Limpiar la sesión existente
+            try {
+                console.log('Intentando limpiar la sesión existente debido a fallo de autenticación...');
+                const sessionFolder = path.join(sessionDir, `session-${sessionId}`);
+                if (fs.existsSync(sessionFolder)) {
+                    fs.rmdirSync(sessionFolder, { recursive: true });
+                    console.log('Sesión eliminada. El próximo inicio mostrará un nuevo código QR.');
+                }
+            } catch (err) {
+                console.error('Error al limpiar sesión:', err);
+            }
+            reject(new Error(`Fallo de autenticación: ${msg}`)); // Rechazar la promesa
+        });
+
+        client.on('disconnected', async (reason) => {
+            console.log('Cliente de WhatsApp desconectado:', reason);
+            // Limpiar la sesión si la desconexión fue por conflicto o error grave
+            if (reason === 'CONFLICT' || reason === 'NAVIGATION' || reason === 'LOGOUT') {
+                try {
+                    console.log('Limpiando sesión debido a desconexión crítica...');
+                    const sessionFolder = path.join(sessionDir, `session-${sessionId}`);
+                    if (fs.existsSync(sessionFolder)) {
+                        fs.rmdirSync(sessionFolder, { recursive: true });
+                        console.log('Sesión eliminada. El próximo inicio mostrará un nuevo código QR.');
+                    }
+                } catch (err) {
+                    console.error('Error al limpiar sesión después de desconexión:', err);
+                }
+            }
+            
+            // Intentar reconectar automáticamente después de un tiempo
+            console.log('Intentando reconectar en 10 segundos...');
+            setTimeout(async () => {
+                try {
+                    console.log('Reiniciando cliente de WhatsApp...');
+                    await client.initialize();
+                } catch (err) {
+                    console.error('Error al reiniciar el cliente de WhatsApp:', err);
+                }
+            }, 10000);
+        });
+
+        function parseScraperCommand(commandBody) {
+            const params = {};
+            const commandArgs = commandBody.toLowerCase().replace(/^!buscarprop/, '').trim();
+            if (!commandArgs) return params;
+
+            const argsArray = commandArgs.split(';');
+            argsArray.forEach(arg => {
+                const [keyWithMaybeSpaces, ...valueParts] = arg.split(':');
+                const key = keyWithMaybeSpaces.trim();
+                if (key && valueParts.length > 0) {
+                    const value = valueParts.join(':').trim();
+                    if (key === 'uf') params.uf = value;
+                    else if (key === 'op') params.op = value.split(',').map(v => v.trim());
+                    else if (key === 'tipo') params.tipo = value.split(',').map(v => v.trim());
+                    else if (key === 'reg') params.reg = value.split(',').map(v => v.trim());
+                    else if (key === 'com') params.com = value; 
+                    else if (key === 'dorm') params.dorm = value.split(',').map(v => v.trim());
+                    else if (key === 'maxp') params.MAXP = value; 
+                }
+            });
+            return params;
+        }
+
+        client.on('message_create', async (msg) => {
+            if (msg.fromMe || msg.isStatus) {
+                return;
+            }
+
+            // --- LIMPIEZA DE MENSAJE ---
+            const originalMessageBody = msg.body;
+            const messageBody = originalMessageBody ? originalMessageBody.replace(/[\u202A-\u202F\u200E\u200F]/g, '').trim() : '';
+            // --- FIN LIMPIEZA ---
+
+            const senderNumber = msg.from.split('@')[0];
+            const isIgnored = await IgnoredUser.findByPhoneNumber(senderNumber);
+            if (isIgnored) {
+                console.log(`INFO: Mensaje de número ignorado (${senderNumber}) recibido. Ignorando.`);
+            return;
+            }
+
+            // Verificar comandos de administrador
+            if (messageBody && messageBody.startsWith('!admin') && ADMIN_SENDER_IDS.includes(msg.from)) {
+                await handleAdminCommand(messageBody, client, msg);
+                return;
+            }
+
+            // Verificar si es un comando para ver alertas
+            if (messageBody && messageBody.toLowerCase() === '!misalertas') {
+                await listUserAlerts(msg.from);
+                return;
+            }
+
+            // Verificar si es un comando para eliminar una alerta
+            const deleteAlertRegex = /^!eliminaralerta\s+(\d+)$/i;
+            const deleteAlertMatch = messageBody.match(deleteAlertRegex);
+            if (deleteAlertMatch) {
+                const alertNumber = parseInt(deleteAlertMatch[1], 10);
+                await deleteUserAlert(msg.from, alertNumber);
+                return;
+            }
+
+            // Verificar si es un comando para listar propiedades
+            if (messageBody && messageBody.toLowerCase() === '!propiedades') {
+                await listAvailableProperties(msg.from);
+                return;
+            }
+
+            // Verificar si es un comando para buscar propiedades
+            if (messageBody && messageBody.toLowerCase().startsWith('!buscarprop')) {
+                const params = parseScraperCommand(messageBody);
+                await handleScraperCommand(msg.from, params);
+                return;
+            }
+
+            const chat = await msg.getChat();
+            if (chat.isGroup) {
+                const senderIdInGroup = msg.author;
+                const chatId = chat.id._serialized;
+                const finalSenderIdForGroupMessage = senderIdInGroup || 'unknown_group_participant@g.us';
+                
+                // Añadir información del mensaje para mejor seguimiento
+                const messagePreview = messageBody.length > 30 ? `${messageBody.substring(0, 30)}...` : messageBody;
+                console.log(`INFO [GRUPO]: Mensaje en Grupo '${chat.name}' (${chatId}) | De Usuario: ${finalSenderIdForGroupMessage} | Cuerpo: "${messagePreview}"`);
+                
+                // Procesar todos los mensajes de grupo con el manejador
+                try {
+                    await handleWhatsappGroupMessage(msg, messageBody, chatId, finalSenderIdForGroupMessage);
+                    console.log(`INFO: Mensaje de grupo procesado correctamente: ${chatId}`);
+                } catch (error) {
+                    console.error(`ERROR: No se pudo procesar mensaje de grupo: ${error.message}`);
+                }
+                return;
+            }
+                    
+            const contact = await msg.getContact();
+            const senderId = msg.from;
+
+            // --- REUBICADO: El manejo de comandos ahora tiene prioridad ---
+            if (messageBody && messageBody.startsWith('!')) {
+                const isAdmin = ADMIN_SENDER_IDS.includes(senderId);
+                // NOTA: handleAdminCommand debe manejar tanto comandos de admin como de usuario normal.
+                await handleCommand(messageBody, client, msg, isAdmin);
+                        return;
+                    }
+                    
+            const isGreetingMessage = isGreeting(messageBody);
+
+            // Verificar si el usuario está confirmando una alerta después de una búsqueda
+            if (userSessionState[senderId] && userSessionState[senderId].step === 'awaiting_alert_confirmation') {
+                const normalizedResponse = messageBody.toLowerCase().trim();
+                
+                // Verificar si la respuesta es afirmativa (sí, si, yes, claro, etc.)
+                if (/^(s[ií]|si|yes|claro|ok|por supuesto|dale|adelante|confirmado)$/.test(normalizedResponse)) {
+                    console.log(`INFO [ALERTA]: Usuario ${senderId} ha confirmado crear una alerta de búsqueda después de una búsqueda`);
+                    
+                    try {
+                        // Obtener la configuración de la hoja
+                        const sheetConfig = await googleSheetsService.getMainSheetConfig();
+                        if (!sheetConfig || !sheetConfig.spreadsheetId) {
+                            await client.sendMessage(senderId, '❌ ¡Ups! No pude acceder a la configuración para guardar tu alerta. Por favor, contacta al administrador para que te ayude. 🙏');
+                            delete userSessionState[senderId];
+                            return;
+                        }
+                        
+                        // Preparar los datos para guardar la alerta
+                        const pendingAlertData = userSessionState[senderId].pendingAlertData;
+                        
+                        // Guardar la alerta en la hoja
+                        const saveResult = await googleSheetsService.saveBusquedaAlert(sheetConfig.spreadsheetId, pendingAlertData);
+                        
+                        if (saveResult) {
+                            // Crear un mensaje más detallado con los criterios de la alerta
+                            let criteriosMsg = '*Tipo:* ' + (pendingAlertData.tipoPropiedad || 'Cualquiera');
+                            
+                            if (pendingAlertData.region) {
+                                criteriosMsg += '\n*Región:* ' + pendingAlertData.region;
+                            }
+                            
+                            if (pendingAlertData.comuna) {
+                                criteriosMsg += '\n*Comuna:* ' + pendingAlertData.comuna;
+                            }
+                            
+                            if (pendingAlertData.dormitorios) {
+                                criteriosMsg += '\n*Dormitorios:* ' + pendingAlertData.dormitorios + ' o más';
+                            }
+                            
+                            if (pendingAlertData.banos) {
+                                criteriosMsg += '\n*Baños:* ' + pendingAlertData.banos + ' o más';
+                            }
+                            
+                            if (pendingAlertData.presupuesto) {
+                                criteriosMsg += '\n*Presupuesto máximo:* ' + pendingAlertData.presupuesto;
+                            }
+                            
+                            const confirmationMsg = '✅ *¡Genial! Tu alerta ha sido creada exitosamente* 🎉\n\n' +
+                                '📋 *Criterios configurados:*\n' + criteriosMsg + '\n\n' +
+                                '🔔 Te notificaré inmediatamente cuando encontremos propiedades que coincidan con estos criterios.\n\n' +
+                                '💡 Para ver tus alertas activas, escribe *!misalertas*\n' +
+                                '🗑️ Para eliminar una alerta, escribe *!eliminaralerta [número]*';
+                                
+                            await client.sendMessage(senderId, confirmationMsg);
+                        } else {
+                            await client.sendMessage(senderId, '❌ ¡Vaya! Parece que hubo un problema al crear tu alerta. 😕 ¿Podrías intentarlo nuevamente más tarde? ¡Gracias por tu paciencia! 🙏');
+                        }
+                    } catch (error) {
+                        console.error('ERROR [ALERTA]: Error al crear alerta de búsqueda:', error);
+                        await client.sendMessage(senderId, '❌ ¡Lo siento mucho! Tuvimos un pequeño problema al crear tu alerta. 😔 ¿Podrías intentarlo nuevamente en unos minutos? ¡Aprecio tu comprensión! 🙏');
+                    }
+                    
+                    // Limpiar el estado de sesión
+                    delete userSessionState[senderId];
+                    return;
+                } 
+                // Verificar si la respuesta es negativa (no, nop, etc.)
+                else if (/^(no|nop|n|nope|negativo)$/.test(normalizedResponse)) {
+                    console.log(`INFO [ALERTA]: Usuario ${senderId} ha rechazado crear una alerta de búsqueda`);
+                    await client.sendMessage(senderId, '¡Entendido! 👍 No te preocupes, no crearé ninguna alerta por ahora. Si cambias de opinión, puedes realizar una nueva búsqueda en cualquier momento. ¡Estoy aquí para ayudarte! 😊');
+                    
+                    // Limpiar el estado de sesión
+                    delete userSessionState[senderId];
+                    return;
+                }
+            }
+
+            // --- INICIO: NUEVO FLUJO DE CONVERSACIÓN GUIADO ---
+            // Si el usuario está en el paso de elegir una acción
+            if (userSessionState[senderId] && userSessionState[senderId].step === 'awaiting_action') {
+                const userChoice = messageBody.toLowerCase().trim();
+                if (userChoice.includes('buscar') || userChoice === '1') {
+                    userSessionState[senderId].step = 'gathering_search_details';
+                    // Enviar los mensajes en dos partes
+                    await client.sendMessage(senderId, SEARCH_INTRO);
+                    // Pequeña pausa para que los mensajes no lleguen al mismo tiempo
+                    setTimeout(async () => {
+                        await client.sendMessage(senderId, `*${SEARCH_FORMAT.replace(/\n/g, '*\n*')}*`);
+                    }, 500);
+                    return;
+                } else if (userChoice.includes('ofrecer') || userChoice === '2') {
+                    userSessionState[senderId].step = 'gathering_offer_details';
+                    // Enviar los mensajes en dos partes
+                    await client.sendMessage(senderId, OFFER_INTRO);
+                    // Pequeña pausa para que los mensajes no lleguen al mismo tiempo
+                    setTimeout(async () => {
+                        await client.sendMessage(senderId, `*${OFFER_FORMAT.replace(/\n/g, '*\n*')}*`);
+                    }, 500);
+                    return;
+                } else {
+                    await client.sendMessage(senderId, "No entendí tu respuesta. Por favor, responde con 'Buscar' o 'Ofrecer' (o el número correspondiente).");
+                    return;
+                }
+            }
+
+            // --- NUEVO: Manejo de cambio de opinión del usuario ---
+            const userMessageLower = messageBody.toLowerCase().trim();
+            if (userSessionState[senderId]) {
+                // Si el usuario estaba en el flujo de búsqueda, pero ahora indica que quiere ofrecer.
+                if (userSessionState[senderId].step === 'gathering_search_details' && (userMessageLower.startsWith('ofrecer') || userMessageLower.startsWith('ofrezco'))) {
+                    // Si el mensaje es corto, es probable que sea un cambio de intención, no una descripción completa.
+                    if (userMessageLower.length < 20) {
+                        console.log(`INFO: Usuario ${senderId} cambió de opinión de BUSCAR a OFRECER.`);
+                        userSessionState[senderId].step = 'gathering_offer_details';
+                        // Enviar los mensajes en dos partes
+                        await client.sendMessage(senderId, OFFER_INTRO);
+                        // Pequeña pausa para que los mensajes no lleguen al mismo tiempo
+                        setTimeout(async () => {
+                            await client.sendMessage(senderId, `*${OFFER_FORMAT.replace(/\n/g, '*\n*')}*`);
+                        }, 500);
+                        return;
+                    }
+                }
+
+                // Si el usuario estaba en el flujo de oferta, pero ahora indica que quiere buscar.
+                if (userSessionState[senderId].step === 'gathering_offer_details' && (userMessageLower.startsWith('buscar') || userMessageLower.startsWith('busco'))) {
+                    if (userMessageLower.length < 20) {
+                        console.log(`INFO: Usuario ${senderId} cambió de opinión de OFRECER a BUSCAR.`);
+                        userSessionState[senderId].step = 'gathering_search_details';
+                        // Enviar los mensajes en dos partes
+                        await client.sendMessage(senderId, SEARCH_INTRO);
+                        // Pequeña pausa para que los mensajes no lleguen al mismo tiempo
+                        setTimeout(async () => {
+                            await client.sendMessage(senderId, `*${SEARCH_FORMAT.replace(/\n/g, '*\n*')}*`);
+                        }, 500);
+                        return;
+                    }
+                }
+            }
+
+            // Si es un saludo y no hay una sesión activa, iniciar el flujo
+            if (isGreetingMessage && !userSessionState[senderId]) {
+                userSessionState[senderId] = { step: 'awaiting_action' };
+                await client.sendMessage(senderId, '¡Hola! 👋✨ ¡Qué alegría saludarte! Soy tu asistente inmobiliario de Konecte, listo para ayudarte a encontrar tu propiedad ideal. 🏡💫\n\n¿Qué te gustaría hacer hoy?\n\n1. *Buscar* una propiedad 🔍\n2. *Ofrecer* una propiedad 📋');
+                return;
+            }
+            // --- FIN: NUEVO FLUJO DE CONVERSACIÓN GUIADO ---
+
+            // --- Lógica de procesamiento de lenguaje natural (existente y ahora principal) ---
+            const wasHandledAsSearch = await handleNaturalLanguageSearch(msg.from, messageBody);
+            if (wasHandledAsSearch) {
+                if (userSessionState[senderId]) {
+                    delete userSessionState[senderId]; // Limpiar estado de sesión si se manejó una búsqueda completa
+                }
+                return;
+            }
+
+            // El resto de los manejadores (audio, etc.)
+            const directSenderJid = msg.from;
+            console.log(`Mensaje de ${contact.pushname || contact.number} (${directSenderJid}): ${messageBody}`);
+
+            const isAudioMessage = msg.hasMedia && (msg.type === 'audio' || msg.type === 'ptt' || msg.type === 'voice' || (msg.mimetype && (msg.mimetype.includes('audio') || msg.mimetype.includes('ogg') || msg.mimetype.includes('voice'))));
+            if (isAudioMessage) {
+                console.log(`DEBUG: Mensaje de audio detectado: tipo=${msg.type}, mimetype=${msg.mimetype || 'N/A'}`);
+            }
+
+            if ((!messageBody || messageBody.trim() === '') && !isAudioMessage) {
+                 console.log('Mensaje vacío (no audio), ignorando.');
+                                return; 
+            }
+
+            const senderNameToStore = contact.pushname || contact.name || `Usuario ${senderNumber}`;
+            await processDirectMessage(msg, directSenderJid, senderNameToStore, senderNumber, messageBody);
+        });
+
+        client.initialize().catch(err => {
+            console.error('Error al inicializar el cliente de WhatsApp:', err);
+            // Intento de reinicio automático después de un error
+            setTimeout(() => {
+                console.log('Intentando reiniciar el cliente de WhatsApp después de un error...');
+                
+                // Intentar limpiar recursos antes de reiniciar
+                try {
+                    if (client.pupBrowser && !client.pupBrowser.isConnected()) {
+                        console.log('Cerrando navegador desconectado...');
+                        client.pupBrowser.close().catch(e => console.error('Error al cerrar navegador:', e));
+                    }
+                } catch (e) {
+                    console.error('Error al limpiar recursos:', e);
+                }
+                
+                client.initialize().catch(reinitErr => {
+                    console.error('Error en el segundo intento de inicialización:', reinitErr);
+                    reject(reinitErr);
+                });
+            }, 10000); // Esperar 10 segundos antes de reintentar
+        });
+    });
+}
+
+// Función para detectar si un mensaje es un saludo
+function isGreeting(message) {
+    const greetings = [
+        'hola', 'hello', 'hi', 'buenos días', 'buenas tardes', 'buenas noches', 
+        'saludos', 'ey', 'hey', 'ola', 'buen día', 'buenas'
+    ];
+    const lowercaseMsg = message.toLowerCase().trim();
+    return greetings.some(greeting => lowercaseMsg === greeting || lowercaseMsg.startsWith(greeting + ' '));
+}
+
+/**
+ * Envía opciones de respuesta rápida al usuario (simulando botones)
+ * @param {string} chatId - ID del chat al que enviar el mensaje
+ * @param {string} message - Mensaje principal
+ * @param {Array<string>} options - Opciones que se mostrarán como "botones"
+ */
+async function sendQuickReplyOptions(chatId, message, options) {
+    let formattedMessage = `${message}\n\n*Opciones disponibles:*\n`;
+    
+    options.forEach((option, index) => {
+        formattedMessage += `${index + 1}. *${option}*\n`;
+    });
+    
+    formattedMessage += `\nResponde con el número o el texto de la opción que desees seleccionar.`;
+    
+    await client.sendMessage(chatId, formattedMessage);
+}
+
+// NUEVO: Función para procesar mensajes directos (texto normal o transcripciones de audio)
+async function processDirectMessage(msg, directSenderJid, senderNameToStore, phoneNumberToStore, messageText) {
+    try {
+        console.log(`Procesando mensaje directo de: ${senderNameToStore} (lógica Gemini/Sheets)`);
+
+        // Verificar si es una respuesta de confirmación para crear una alerta
+        if (userPendingAlertConfirmation[directSenderJid] && userPendingAlertConfirmation[directSenderJid].alertData) {
+            const normalizedResponse = messageText.toLowerCase().trim();
+            // Verificar si la respuesta es afirmativa (sí, si, yes, claro, etc.)
+            if (/^(s[ií]|yes|claro|ok|por supuesto|dale|adelante|confirmado)$/.test(normalizedResponse)) {
+                console.log(`INFO [ALERTA]: Usuario ${senderNameToStore} ha confirmado crear una alerta de búsqueda`);
+                
+                try {
+                    // Obtener la configuración de la hoja
+                    const sheetConfig = await googleSheetsService.getMainSheetConfig();
+                    if (!sheetConfig || !sheetConfig.spreadsheetId) {
+                        await client.sendMessage(directSenderJid, '❌ ¡Ups! No pude acceder a la configuración para guardar tu alerta. Por favor, contacta al administrador para que te ayude. 🙏');
+                        delete userPendingAlertConfirmation[directSenderJid];
+                        return;
+                    }
+                    
+                    // Preparar los datos para guardar la alerta
+                    const alertData = userPendingAlertConfirmation[directSenderJid].alertData;
+                    const searchData = {
+                        senderId: directSenderJid,
+                        name: senderNameToStore,
+                        tipoPropiedad: alertData.tipo,
+                        region: '', // No tenemos esta información
+                        comuna: alertData.comuna,
+                        dormitorios: alertData.dormitorios || '',
+                        banos: alertData.banos || '',
+                        presupuesto: alertData.presupuesto,
+                        otros: alertData.otros
+                    };
+                    
+                    // Guardar la alerta en la hoja
+                    const saveResult = await googleSheetsService.saveBusquedaAlert(sheetConfig.spreadsheetId, searchData);
+                    
+                    if (saveResult) {
+                        // Crear un mensaje más detallado con los criterios de la alerta
+                        let criteriosMsg = '*Tipo:* ' + (alertData.tipo || 'Cualquiera');
+                        
+                        if (alertData.comuna) {
+                            criteriosMsg += '\n*Comuna:* ' + alertData.comuna;
+                        }
+                        
+                        if (alertData.dormitorios) {
+                            criteriosMsg += '\n*Dormitorios:* ' + alertData.dormitorios + ' o más';
+                        }
+                        
+                        if (alertData.banos) {
+                            criteriosMsg += '\n*Baños:* ' + alertData.banos + ' o más';
+                        }
+                        
+                        if (alertData.presupuesto) {
+                            criteriosMsg += '\n*Presupuesto máximo:* ' + alertData.presupuesto;
+                        }
+                        
+                        const confirmationMsg = '✅ *¡Genial! Tu alerta ha sido creada exitosamente* 🎉\n\n' +
+                            '📋 *Criterios configurados:*\n' + criteriosMsg + '\n\n' +
+                            '🔔 Te notificaré inmediatamente cuando encontremos propiedades que coincidan con estos criterios.\n\n' +
+                            '💡 Para ver tus alertas activas, escribe *!misalertas*\n' +
+                            '🗑️ Para eliminar una alerta, escribe *!eliminaralerta [número]*';
+                            
+                        await client.sendMessage(directSenderJid, confirmationMsg);
+                    } else {
+                        await client.sendMessage(directSenderJid, '❌ ¡Vaya! Parece que hubo un problema al crear tu alerta. 😕 ¿Podrías intentarlo nuevamente más tarde? ¡Gracias por tu paciencia! 🙏');
+                    }
+                } catch (error) {
+                    console.error('ERROR [ALERTA]: Error al crear alerta de búsqueda:', error);
+                    await client.sendMessage(directSenderJid, '❌ ¡Lo siento mucho! Tuvimos un pequeño problema al crear tu alerta. 😔 ¿Podrías intentarlo nuevamente en unos minutos? ¡Aprecio tu comprensión! 🙏');
+                }
+                
+                // Limpiar los datos de confirmación pendiente
+                delete userPendingAlertConfirmation[directSenderJid];
+                return;
+            } 
+            // Verificar si la respuesta es negativa (no, nop, etc.)
+            else if (/^(no|nop|n|nope|negativo)$/.test(normalizedResponse)) {
+                console.log(`INFO [ALERTA]: Usuario ${senderNameToStore} ha rechazado crear una alerta de búsqueda`);
+                await client.sendMessage(directSenderJid, '¡Entendido! 👍 No te preocupes, no crearé ninguna alerta por ahora. Si cambias de opinión, puedes realizar una nueva búsqueda en cualquier momento. ¡Estoy aquí para ayudarte! 😊');
+                
+                // Limpiar los datos de confirmación pendiente
+                delete userPendingAlertConfirmation[directSenderJid];
+                return;
+            }
+        }
+
+        // NUEVO: Verificar si es una búsqueda en PortalInmobiliario con lenguaje natural
+        const portalInmobiliarioRegex = /(?:busca|buscar|encuentra|encontrar|consulta|consultar|busqueda|búsqueda|muestra|mostrar)\s+(?:en|con)\s+(?:portal\s*inmobiliario|portalinmobiliario)/i;
+        const isPortalInmobiliarioSearch = portalInmobiliarioRegex.test(messageText);
+        
+        // Alternativa: también detectar si menciona "portal inmobiliario" junto con términos de búsqueda
+        const isImplicitPortalSearch = messageText.toLowerCase().includes('portal inmobiliario') || 
+                                      messageText.toLowerCase().includes('portalinmobiliario');
+        
+        if (isPortalInmobiliarioSearch || isImplicitPortalSearch) {
+            console.log(`INFO [DIRECTO]: Detectada búsqueda en lenguaje natural para PortalInmobiliario de ${senderNameToStore}: ${messageText}`);
+            
+            try {
+                await client.sendMessage(directSenderJid, '🤖 Entendido! Voy a buscar esa propiedad en PortalInmobiliario... Esto puede tardar un momento.');
+                
+                // Extraer parámetros para el scraper usando Gemini
+                const scrapingParams = await geminiService.extractPortalInmobiliarioParams(messageText);
+                console.log('BOTITO LOG: Parámetros extraídos para PortalInmobiliario:', JSON.stringify(scrapingParams, null, 2));
+                
+                // Llamar al scraper API
+                const scraperApiUrl = 'http://localhost:5001/scrape_propiedades';
+                const response = await axios.post(scraperApiUrl, scrapingParams);
+                console.log('Respuesta de la API del scraper (lenguaje natural):', JSON.stringify(response.data, null, 2));
+                
+                if (response.data && Array.isArray(response.data) && response.data.length > 0) {
+                    let reply = `🔍 ¡Resultados de PortalInmobiliario! (${response.data.length} propiedades encontradas, mostrando máx. 5):\n\n`;
+                    response.data.slice(0, 5).forEach((prop, index) => {
+                        reply += `*Propiedad ${index + 1}:*\n`;
+                        reply += `  *Nombre:* ${prop.Propiedad || 'N/A'}\n`;
+                        let precioFormateado = "N/A";
+                        if (prop.precio) { 
+                            precioFormateado = prop.precio;
+                            if (prop.precio_CLP) {
+                                let clpStr = prop.precio_CLP;
+                                if (typeof prop.precio_CLP === 'number') {
+                                    clpStr = prop.precio_CLP.toLocaleString('es-CL');
+                                }
+                                precioFormateado += ` (CLP ${clpStr})`;
+                            }
+                        } else if (prop.precio_CLP) {
+                            let clpStr = prop.precio_CLP;
+                            if (typeof prop.precio_CLP === 'number') {
+                                clpStr = prop.precio_CLP.toLocaleString('es-CL');
+                            }
+                            precioFormateado = `CLP ${clpStr}`;
+                        }
+                        reply += `  *Precio:* ${precioFormateado}\n`;
+                        reply += `  *Dorms:* ${prop.Dormitorios || 'N/A'}\n`;
+                        reply += `  *Link:* ${prop.Link || 'N/A'}\n\n`;
+                    });
+                    if (response.data.length > 5) {
+                        reply += `...y ${response.data.length - 5} más.`;
+                    }
+                    await client.sendMessage(directSenderJid, reply);
+                } else if (response.data && response.data.message) {
+                    await client.sendMessage(directSenderJid, `ℹ️ ${response.data.message}`);
+                        } else {
+                    await client.sendMessage(directSenderJid, '😔 No encontré propiedades que coincidan con tu búsqueda en PortalInmobiliario. ¿Podrías ser más específico con la ubicación o el tipo de propiedad?');
+                }
+                return; // Terminar el flujo aquí
+            } catch (error) {
+                console.error('Error en el flujo de búsqueda natural en PortalInmobiliario:', error.response ? JSON.stringify(error.response.data, null, 2) : error.message);
+                await client.sendMessage(directSenderJid, '⚠️ Hubo un problema al buscar en PortalInmobiliario. Por favor, intenta más tarde o usa el comando !buscarprop con parámetros específicos.');
+                return; // Terminar el flujo aquí
+            }
+        }
+
+        // NUEVO: Verificar si el usuario está interesado en una propiedad específica
+        const propertyInterestRegex = /(?:me\s+interesa|contactar|quiero|info(?:rmaci[oó]n)?)\s+(?:la|el|sobre|con)?\s*(?:propiedad|casa|depto|departamento|inmueble)\s*(?:n[úu]mero|#|numero)?\s*(\d+)/i;
+        const propertyInterestMatch = messageText.match(propertyInterestRegex);
+        
+        if (propertyInterestMatch && userPendingAlertConfirmation[directSenderJid] && 
+            userPendingAlertConfirmation[directSenderJid].matchingProperties) {
+            
+            const propertyNumber = parseInt(propertyInterestMatch[1], 10);
+            const userPendingData = userPendingAlertConfirmation[directSenderJid];
+            const matchingProperties = userPendingData.matchingProperties;
+            
+            console.log(`INFO [DIRECTO]: Usuario ${directSenderJid} está interesado en la propiedad #${propertyNumber}`);
+            
+            if (propertyNumber > 0 && propertyNumber <= matchingProperties.length) {
+                const selectedProperty = matchingProperties[propertyNumber - 1];
+
+                const SENDER_NAME_IDX = 20;
+                const SENDER_ID_IDX = 23;
+                const PHONE_IDX = 17;
+                const EMAIL_IDX = 18;
+                const AGENT_PHONE_IDX = 19;
+                
+                const ownerName = selectedProperty[SENDER_NAME_IDX] || 'No disponible';
+                const ownerContactId = selectedProperty[SENDER_ID_IDX];
+                const propertyPhone = selectedProperty[PHONE_IDX];
+                const propertyEmail = selectedProperty[EMAIL_IDX];
+                const agentPhone = selectedProperty[AGENT_PHONE_IDX];
+
+                let contactMessage = `¡Excelente! Aquí tienes la información de contacto para la propiedad #${propertyNumber}:\n\n`;
+                contactMessage += `*Publicado por:* ${ownerName}\n`;
+                
+                let hasContactInfo = false;
+                if (propertyPhone) {
+                    contactMessage += `*Teléfono:* ${propertyPhone}\n`;
+                    hasContactInfo = true;
+                }
+                if (agentPhone) {
+                    contactMessage += `*Teléfono (corredor):* ${agentPhone}\n`;
+                    hasContactInfo = true;
+                }
+                if (propertyEmail) {
+                    contactMessage += `*Email:* ${propertyEmail}\n`;
+                    hasContactInfo = true;
+                }
+
+                if (hasContactInfo) {
+                    contactMessage += '\n¡Te recomiendo que te pongas en contacto para obtener más detalles!';
+                    await client.sendMessage(directSenderJid, contactMessage);
+                } else if (ownerContactId) {
+                    contactMessage += `\nNo se ha proporcionado un teléfono o email público para esta propiedad. ¿Quieres que le envíe un mensaje a ${ownerName} de tu parte, para que se ponga en contacto contigo? (Responde Si/No)`;
+                    
+                    userPendingAlertConfirmation[directSenderJid].contactRequest = {
+                        propertyNumber: propertyNumber,
+                        propertyOwnerId: ownerContactId,
+                        propertyOwnerName: ownerName
+                    };
+
+                    await client.sendMessage(directSenderJid, contactMessage);
+                } else {
+                    await client.sendMessage(directSenderJid, 'Lo siento, no pude encontrar información de contacto para esta propiedad.');
+                }
+
+                delete userPendingAlertConfirmation[directSenderJid].matchingProperties;
+                return;
+                    } else {
+                await client.sendMessage(directSenderJid, `⚠️ Lo siento, no encontré la propiedad número ${propertyNumber}. Por favor, indica un número válido entre 1 y ${matchingProperties.length}.`);
+                return;
+            }
+        }
+
+        const extractedData = await geminiService.extractPropertyDetails(messageText);
+        console.log('Datos extraídos por Gemini (directo):', extractedData);
+
+        // Obtener sheetConfig una vez, al principio de este bloque try.
+        const sheetConfig = await googleSheetsService.getMainSheetConfig();
+
+        if (extractedData.error || (!extractedData.accion && !extractedData.tipoPropiedad)) {
+            console.log(`Mensaje directo de ${senderNameToStore} no es un anuncio de propiedad claro o hubo error. Intentando chat general. Error previo: ${extractedData.error}`);
+            const chatResponse = await geminiService.getGeneralChatResponse(messageText);
+            await client.sendMessage(directSenderJid, chatResponse);
+            
+            // NUEVO: Si el bot está pidiendo más detalles, iniciar acumulación de mensajes
+            if (isAskingForMoreDetails(chatResponse)) {
+                console.log(`INFO [DIRECTO]: Bot pidiendo más detalles a ${senderNameToStore}, iniciando acumulación de mensajes`);
+                userMessageAccumulator[directSenderJid] = {
+                    messages: [messageText],
+                    lastMessageTime: Date.now(),
+                    initialQuery: messageText
+                };
+            }
+            
+            return;
+        }
+        
+        // Si se extrajeron datos, pero la lógica no continuó, es porque handleNaturalLanguageSearch no los manejó.
+        // Esto indica un posible estado inconsistente. Por seguridad, damos una respuesta genérica.
+        console.log(`WARN: Datos extraídos en processDirectMessage pero sin acción clara. Mensaje: "${messageText}"`);
+        const genericResponse = await geminiService.getGeneralChatResponse(messageText);
+        await client.sendMessage(directSenderJid, genericResponse);
+
+            } catch (error) {
+        console.error('Error procesando el mensaje directo:', error);
+        try {
+            const chatResponse = await geminiService.getGeneralChatResponse(messageText);
+            await client.sendMessage(directSenderJid, chatResponse);
+                } catch (sendError) {
+                    console.error('Error al enviar mensaje de error/chat general al usuario:', sendError);
+                }
+            }
+        }
+
+/**
+ * NUEVO: Listar todas las alertas activas de un usuario
+ * @param {string} senderJid - ID de WhatsApp del usuario
+ */
+async function listUserAlerts(senderJid) {
+    try {
+        console.log(`INFO [ALERTAS]: Listando alertas para usuario ${senderJid}`);
+        
+        // Obtener configuración de la hoja de cálculo
+        const sheetConfig = await googleSheetsService.getMainSheetConfig();
+        if (!sheetConfig || !sheetConfig.spreadsheetId) {
+            await client.sendMessage(senderJid, '❌ ¡Ups! No pude acceder a la configuración de alertas. Por favor, contacta al administrador para que te ayude. 🙏');
+            return;
+        }
+        
+        // Leer datos de la hoja de alertas
+        const alertsData = await googleSheetsService.readAlerts(sheetConfig.spreadsheetId);
+        if (!alertsData || alertsData.length <= 1) {
+            await client.sendMessage(senderJid, '📝 No hay alertas registradas en el sistema por el momento. ¡Cuando necesites crear una, estaré aquí para ayudarte! 😊');
+            return;
+        }
+        
+        console.log(`INFO [ALERTAS]: Datos de alertas cargados. Total filas: ${alertsData.length}`);
+        
+        // Índices de las columnas en la hoja AlertasBusquedas según las cabeceras
+        // [IDAlerta, SenderID, TimestampCreacion, TipoPropiedadBuscada, RegionBuscada, ComunaBuscada, DormitoriosBuscados, BanosBuscados, OtrosCriterios, EstadoAlerta, UltimaNotificacionEnviada]
+        const idAlertaIdx = 0;          // IDAlerta (columna A)
+        const senderIdIdx = 1;          // SenderID (columna B)
+        const timestampIdx = 2;         // TimestampCreacion (columna C)
+        const tipoPropiedadIdx = 3;     // TipoPropiedadBuscada (columna D)
+        const regionIdx = 4;            // RegionBuscada (columna E)
+        const comunaIdx = 5;            // ComunaBuscada (columna F)
+        const dormitoriosIdx = 6;       // DormitoriosBuscados (columna G)
+        const banosIdx = 7;             // BanosBuscados (columna H)
+        const otrosCriteriosIdx = 8;    // OtrosCriterios (columna I)
+        const estadoAlertaIdx = 9;      // EstadoAlerta (columna J)
+        
+        // Filtrar alertas del usuario actual
+        const userAlerts = alertsData.filter(row => {
+            // Verificar que la fila tenga suficientes columnas
+            if (row.length <= senderIdIdx || row.length <= estadoAlertaIdx) {
+                console.log(`INFO [ALERTAS]: Fila con datos insuficientes: ${JSON.stringify(row)}`);
+                return false;
+            }
+            
+            const matchesSender = row[senderIdIdx] === senderJid;
+            const isActive = row[estadoAlertaIdx].toLowerCase() === 'activa';
+            
+            if (matchesSender && !isActive) {
+                console.log(`INFO [ALERTAS]: Alerta encontrada para ${senderJid} pero no está activa: ${JSON.stringify(row)}`);
+            }
+            
+            return matchesSender && isActive;
+        });
+        
+        console.log(`INFO [ALERTAS]: Encontradas ${userAlerts.length} alertas activas para el usuario ${senderJid}`);
+        
+        if (userAlerts.length === 0) {
+            await client.sendMessage(senderJid, '📝 No tienes alertas activas en este momento. ¡Cuando quieras crear una, solo dímelo! 🌟');
+            return;
+        }
+        
+        // Construir mensaje con las alertas del usuario
+        let alertsMessage = `*📋 ¡Tus alertas activas!* 🔔\n\n`;
+        
+        userAlerts.forEach((alert, index) => {
+            alertsMessage += `*Alerta #${index + 1}:* ✨\n`;
+            
+            // Mostrar ID de alerta para depuración
+            if (alert.length > idAlertaIdx && alert[idAlertaIdx]) {
+                alertsMessage += `• *ID:* ${alert[idAlertaIdx]} 🆔\n`;
+            }
+            
+            alertsMessage += `• *Tipo:* ${alert.length > tipoPropiedadIdx ? alert[tipoPropiedadIdx] || 'No especificado' : 'No especificado'} 🏠\n`;
+            
+            if (alert.length > comunaIdx && alert[comunaIdx]) {
+                alertsMessage += `• *Comuna:* ${alert[comunaIdx]} 📍\n`;
+            }
+            
+            if (alert.length > regionIdx && alert[regionIdx]) {
+                alertsMessage += `• *Región:* ${alert[regionIdx]} 🗺️\n`;
+            }
+            
+            if (alert.length > dormitoriosIdx && alert[dormitoriosIdx]) {
+                alertsMessage += `• *Dormitorios:* ${alert[dormitoriosIdx]} 🛏️\n`;
+            }
+            
+            if (alert.length > banosIdx && alert[banosIdx]) {
+                alertsMessage += `• *Baños:* ${alert[banosIdx]} 🚿\n`;
+            }
+            
+            // Procesar el campo OtrosCriterios que ahora es un JSON
+            if (alert.length > otrosCriteriosIdx && alert[otrosCriteriosIdx]) {
+                try {
+                    const otrosCriterios = JSON.parse(alert[otrosCriteriosIdx]);
+                    
+                    if (otrosCriterios.presupuesto) {
+                        alertsMessage += `• *Presupuesto:* ${otrosCriterios.presupuesto} 💰\n`;
+                    }
+                    
+                    if (otrosCriterios.otros) {
+                        alertsMessage += `• *Otros criterios:* ${otrosCriterios.otros} 📝\n`;
+                    }
+                } catch (e) {
+                    console.error(`ERROR [ALERTAS]: Error al parsear OtrosCriterios: ${e.message}`);
+                    alertsMessage += `• *Otros criterios:* ${alert[otrosCriteriosIdx]} 📝\n`;
+                }
+            }
+            
+            if (alert.length > timestampIdx && alert[timestampIdx]) {
+                alertsMessage += `• *Creada:* ${alert[timestampIdx]} 📅\n`;
+            }
+            
+            // Agregar el número de la alerta para poder eliminarla después
+            alertsMessage += `• *Número:* ${index + 1} 🔢\n\n`;
+        });
+        
+        alertsMessage += `\n🗑️ Para eliminar una alerta, escribe *!eliminaralerta número* (por ejemplo: !eliminaralerta 2)`;
+        
+        await client.sendMessage(senderJid, alertsMessage);
+        
+    } catch (error) {
+        console.error('ERROR [ALERTAS]: Error al listar alertas del usuario:', error);
+        await client.sendMessage(senderJid, '❌ ¡Vaya! Ocurrió un error al listar tus alertas. 😔 ¿Podrías intentarlo nuevamente en unos minutos? ¡Gracias por tu paciencia! 🙏');
+    }
+}
+
+/**
+ * NUEVO: Eliminar una alerta específica de un usuario
+ * @param {string} senderJid - ID de WhatsApp del usuario
+ * @param {number} alertNumber - Número de la alerta a eliminar (basado en el listado)
+ */
+async function deleteUserAlert(senderJid, alertNumber) {
+    try {
+        console.log(`INFO [ALERTAS]: Intentando eliminar alerta #${alertNumber} para usuario ${senderJid}`);
+        
+        // Obtener configuración de la hoja de cálculo
+        const sheetConfig = await googleSheetsService.getMainSheetConfig();
+        if (!sheetConfig || !sheetConfig.spreadsheetId) {
+            await client.sendMessage(senderJid, '❌ ¡Ups! No pude acceder a la configuración de alertas. Por favor, contacta al administrador para que te ayude. 🙏');
+            return;
+        }
+        
+        // Leer datos de la hoja de alertas
+        const alertsData = await googleSheetsService.readAlerts(sheetConfig.spreadsheetId);
+        if (!alertsData || alertsData.length <= 1) {
+            await client.sendMessage(senderJid, '📝 No hay alertas registradas en el sistema por el momento.');
+            return;
+        }
+        
+        // Índices de las columnas en la hoja AlertasBusquedas
+        const idAlertaIdx = 0;      // IDAlerta (columna A)
+        const senderIdIdx = 1;      // SenderID (columna B)
+        const estadoAlertaIdx = 9;  // EstadoAlerta (columna J)
+        
+        // Filtrar alertas activas del usuario
+        const userAlerts = alertsData.filter(row => 
+            row.length > senderIdIdx && 
+            row[senderIdIdx] === senderJid && 
+            row.length > estadoAlertaIdx && 
+            row[estadoAlertaIdx].toLowerCase() === 'activa'
+        );
+        
+        console.log(`INFO [ALERTAS]: Encontradas ${userAlerts.length} alertas activas para el usuario ${senderJid}`);
+        
+        if (userAlerts.length === 0) {
+            await client.sendMessage(senderJid, '📝 No tienes alertas activas para eliminar.');
+            return;
+        }
+        
+        // Verificar que el número de alerta sea válido
+        const alertIndex = parseInt(alertNumber) - 1;
+        if (isNaN(alertIndex) || alertIndex < 0 || alertIndex >= userAlerts.length) {
+            await client.sendMessage(senderJid, `❌ El número de alerta ${alertNumber} no es válido. Por favor, usa *!misalertas* para ver la lista de alertas disponibles.`);
+            return;
+        }
+        
+        // Obtener el ID de la alerta a eliminar
+        const alertToDelete = userAlerts[alertIndex];
+        if (!alertToDelete || alertToDelete.length <= idAlertaIdx || !alertToDelete[idAlertaIdx]) {
+            await client.sendMessage(senderJid, '❌ Error al identificar la alerta a eliminar. Por favor, contacta al administrador.');
+            return;
+        }
+        
+        const alertId = alertToDelete[idAlertaIdx];
+        console.log(`INFO [ALERTAS]: Eliminando alerta con ID: ${alertId}`);
+        
+        // Actualizar el estado de la alerta a 'eliminada'
+        const updated = await googleSheetsService.updateAlertStatus(sheetConfig.spreadsheetId, alertId, 'eliminada');
+        
+        if (updated) {
+            await client.sendMessage(senderJid, `✅ ¡Alerta #${alertNumber} eliminada correctamente! 🗑️`);
+        } else {
+            await client.sendMessage(senderJid, '❌ Hubo un problema al eliminar la alerta. Por favor, inténtalo nuevamente o contacta al administrador.');
+        }
+    } catch (error) {
+        console.error('ERROR [ALERTAS]: Error al eliminar alerta del usuario:', error);
+        await client.sendMessage(senderJid, '❌ ¡Vaya! Ocurrió un error al eliminar tu alerta. 😔 ¿Podrías intentarlo nuevamente en unos minutos? ¡Gracias por tu paciencia! 🙏');
+    }
+}
+
+/**
+ * NUEVO: Listar las últimas propiedades disponibles ofrecidas en el sistema
+ * @param {string} senderJid - ID de WhatsApp del usuario a quien enviar el listado
+ * @param {string|null} operationFilter - Filtro opcional por tipo de operación ('arriendo' o 'venta')
+ * @param {string|null} comunaFilter - Filtro opcional por comuna
+ */
+async function listAvailableProperties(senderJid, operationFilter = null, comunaFilter = null) {
+    try {
+        let logMessage = `INFO [PROPIEDADES]: Listando propiedades disponibles para ${senderJid}`;
+        if (operationFilter) logMessage += ` (Filtro Op: ${operationFilter})`;
+        if (comunaFilter) logMessage += ` (Filtro Comuna: ${comunaFilter})`;
+        console.log(logMessage);
+
+        const sheetConfig = await googleSheetsService.getMainSheetConfig();
+        if (!sheetConfig || !sheetConfig.spreadsheetId) {
+            await client.sendMessage(senderJid, '❌ ¡Ups! No pude acceder al listado de propiedades. Por favor, contacta al administrador para que te ayude. 🙏');
+            return;
+        }
+
+        const propertiesData = await googleSheetsService.readData(sheetConfig.spreadsheetId, `${sheetConfig.sheetName}!A:AA`);
+
+        if (!propertiesData || propertiesData.length <= 1) {
+            await client.sendMessage(senderJid, '📝 No hay propiedades ofrecidas en el sistema en este momento. ¡Cuando se agreguen nuevas, te las mostraré! 😊');
+            return;
+        }
+
+        const accionIdx = 0;
+        const tipoOperacionIdx = 1;
+        const tipoPropiedadIdx = 2;
+        const regionIdx = 3;
+        const comunaIdx = 5;
+        const direccionIdx = 6;
+        const dormitoriosIdx = 9;
+        const banosIdx = 10;
+        const valorIdx = 13;
+        const monedaIdx = 14;
+        const superficieIdx = 16;
+        const telefonoIdx = 18;
+        const emailIdx = 19;
+        const nombreContactoIdx = 20;
+        const fechaCreacionIdx = 21;
+        const estadoIdx = 24;
+        const corredoraIdx = 25;
+        const descripcionIdx = 26;
+
+        const availableProperties = propertiesData
+            .slice(1)
+            .filter(row => {
+                if (!(row.length > estadoIdx &&
+                    row[accionIdx] && row[accionIdx].toLowerCase() === 'ofrezco' &&
+                    row[estadoIdx] && row[estadoIdx].toLowerCase() === 'activo' &&
+                    row[tipoPropiedadIdx] && row[comunaIdx])) {
+                    return false;
+                }
+
+                if (operationFilter) {
+                    const currentOperation = row.length > tipoOperacionIdx && row[tipoOperacionIdx] ? normalizeText(row[tipoOperacionIdx]) : '';
+                    if (operationFilter === 'arriendo') {
+                        if (!['arriendo', 'arrienda'].some(term => currentOperation.includes(term))) return false;
+                    } else if (operationFilter === 'venta') {
+                        const ventaTerms = ['venta', 'vendo'];
+                        if (!ventaTerms.some(term => currentOperation.includes(term))) {
+                            if (normalizeText(row[accionIdx]) === 'ofrezco' && ['arriendo', 'arrienda'].some(term => currentOperation.includes(term))) {
+                                return false; 
+                            }
+                            if (!currentOperation && normalizeText(row[accionIdx]) === 'ofrezco') {
+                                // Válido para venta implícita
+                            } else if (!ventaTerms.some(term => currentOperation.includes(term))){
+                                return false;
+                            }
+                        }
+                    }
+                }
+
+                if (comunaFilter) {
+                    const sheetComuna = row.length > comunaIdx && row[comunaIdx] ? normalizeText(row[comunaIdx]) : '';
+                    if (!sheetComuna.includes(comunaFilter)) { // comunaFilter ya está normalizado
+                        return false;
+                    }
+                }
+                return true;
+            })
+            .map(row => ({
+                data: row,
+                timestamp: (() => {
+                    if (row.length > fechaCreacionIdx + 1 && row[fechaCreacionIdx] && row[fechaCreacionIdx + 1]) {
+                        const parts = row[fechaCreacionIdx].split('/');
+                        if (parts.length === 3) {
+                            return new Date(`${parts[1]}/${parts[0]}/${parts[2]} ${row[fechaCreacionIdx + 1]}`);
+                        }
+                    }
+                    return new Date(0);
+                })()
+            }))
+            .sort((a, b) => b.timestamp - a.timestamp);
+        
+        let messageHeader = "*🏡 ¡Las mejores propiedades disponibles!* ✨";
+        if (operationFilter && comunaFilter) {
+            messageHeader = `*🏡 ¡Propiedades en ${operationFilter} en ${comunaFilter.replace(/^./, c => c.toUpperCase())}!* ✨`;
+        } else if (operationFilter) {
+            messageHeader = `*🏡 ¡Propiedades en ${operationFilter}!* ✨`;
+        } else if (comunaFilter) {
+            messageHeader = `*🏡 ¡Propiedades en ${comunaFilter.replace(/^./, c => c.toUpperCase())}!* ✨`;
+        }
+
+        if (availableProperties.length === 0) {
+            let noResultMessage = "📝 ¡Vaya! No he encontrado propiedades activas";
+            if (operationFilter) noResultMessage += ` para ${operationFilter}`;
+            if (comunaFilter) noResultMessage += ` en ${comunaFilter.replace(/^./, c => c.toUpperCase())}`;
+            noResultMessage += " en este momento. ¡Prueba con otras opciones o vuelve a consultar más tarde! 😊";
+            await client.sendMessage(senderJid, noResultMessage);
+            return;
+        }
+
+        const propertiesToShow = availableProperties.slice(0, 5);
+        let message = `${messageHeader}\n\n`;
+
+        propertiesToShow.forEach((propObj, index) => {
+            const prop = propObj.data;
+            message += `*Propiedad #${index + 1}:* 🌟\n`;
+            message += `• *Tipo:* ${prop[tipoPropiedadIdx]} 🏠\n`;
+            message += `• *Operación:* ${prop.length > tipoOperacionIdx && prop[tipoOperacionIdx] ? prop[tipoOperacionIdx] : 'No especificada'} 📋\n`;
+            message += `• *Ubicación:* ${prop[comunaIdx]}${prop.length > regionIdx && prop[regionIdx] ? ', ' + prop[regionIdx] : ''} 📍\n`;
+            
+            if (prop.length > direccionIdx && prop[direccionIdx]) {
+                message += `• *Dirección:* ${prop[direccionIdx]} 🏢\n`;
+            }
+            if (prop.length > dormitoriosIdx && prop[dormitoriosIdx]) {
+                message += `• *Dormitorios:* ${prop[dormitoriosIdx]} 🛏️\n`;
+            }
+            if (prop.length > banosIdx && prop[banosIdx]) {
+                message += `• *Baños:* ${prop[banosIdx]} 🚿\n`;
+            }
+            if (prop.length > valorIdx && prop[valorIdx]) {
+                message += `• *Valor:* ${prop[valorIdx]}${prop.length > monedaIdx && prop[monedaIdx] ? ' ' + prop[monedaIdx] : ''} 💰\n`;
+            }
+            if (prop.length > superficieIdx && prop[superficieIdx]) {
+                message += `• *Superficie:* ${prop[superficieIdx]} 📐\n`;
+            }
+            if (prop.length > descripcionIdx && prop[descripcionIdx]) {
+                const desc = prop[descripcionIdx].substring(0, 150);
+                message += `• *Descripción:* ${desc}${prop[descripcionIdx].length > 150 ? '...' : ''} 📄\n`;
+            }
+            
+            // Formatear los números telefónicos para mostrarlos con el formato adecuado
+            let telefono = '';
+            let nombreContacto = '';
+            let email = '';
+            let corredora = '';
+            
+            if (prop.length > telefonoIdx && prop[telefonoIdx]) {
+                telefono = prop[telefonoIdx];
+                // Añadir el signo + a los números telefónicos si no lo tienen y parecen ser números internacionales
+                if (typeof telefono === 'string' && !telefono.startsWith('+') && 
+                    /^(\d{1,3})?\s*\d{6,}$/.test(telefono.trim())) {
+                    telefono = '+' + telefono.trim();
+                }
+            }
+            
+            if (prop.length > nombreContactoIdx && prop[nombreContactoIdx]) {
+                nombreContacto = prop[nombreContactoIdx];
+            }
+            
+            if (prop.length > emailIdx && prop[emailIdx]) {
+                email = prop[emailIdx];
+            }
+            
+            if (prop.length > corredoraIdx && prop[corredoraIdx]) {
+                corredora = prop[corredoraIdx];
+            }
+            
+            // Añadir datos de contacto completos
+            message += `\n*DATOS DE CONTACTO DEL CORREDOR:* 👨‍💼👩‍💼\n`;
+            if (nombreContacto) {
+                message += `• *Nombre:* ${nombreContacto} 👤\n`;
+            }
+            if (telefono) {
+                message += `• *Teléfono:* ${telefono} 📱\n`;
+            }
+            if (email) {
+                message += `• *Email:* ${email} 📧\n`;
+            }
+            if (corredora) {
+                message += `• *Corredora:* ${corredora} 🏢\n`;
+            }
+            
+            if (propObj.timestamp.getTime() !== 0) {
+                message += `• *Publicada:* ${propObj.timestamp.toLocaleDateString('es-CL')} 📅\n`;
+            }
+            message += `\n`;
+        });
+
+        if (availableProperties.length > 5) {
+            message += `\nℹ️ ¡Te estoy mostrando 5 de ${availableProperties.length} propiedades disponibles! Para ver más opciones, afina tu búsqueda. 🔍`;
+        }
+        
+        message += `\n\n💡 ¿Encontraste algo interesante? ¡Contáctanos para más información!`;
+        
+        await client.sendMessage(senderJid, message);
+
+    } catch (error) {
+        console.error('ERROR [PROPIEDADES]: Error al listar propiedades disponibles:', error);
+        await client.sendMessage(senderJid, '❌ ¡Vaya! Tuvimos un pequeño problema al obtener el listado de propiedades. 😔 ¿Podrías intentarlo nuevamente en unos minutos? ¡Gracias por tu paciencia! 🙏');
+    }
+}
+
+async function closeWhatsAppClient() {
+    if (client) {
+        console.log('Cerrando y guardando sesión de WhatsApp...');
+        try {
+            // Forzar el guardado de la sesión antes de destruir el cliente
+            if (client.pupPage && !client.pupPage.isClosed()) {
+                await client.pupPage.evaluate(() => {
+                    // Verificar si la función existe antes de intentar llamarla
+                    if (window.Store && window.Store.AppState && typeof window.Store.AppState.saveState === 'function') {
+                        window.Store.AppState.saveState();
+                        return true;
+                    } else {
+                        // La función no existe, pero no es un error crítico
+                        return false;
+                    }
+                }).then(saved => {
+                    if (!saved) {
+                        console.log('INFO: La función saveState no está disponible en esta versión de WhatsApp Web. La sesión se guardará automáticamente.');
+                    }
+                }).catch(err => console.error('Error al forzar guardado de estado:', err));
+            }
+            
+            // Esperar un momento para asegurar que se guarde la sesión
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            
+            // Destruir el cliente
+            await client.destroy();
+            console.log('Sesión de WhatsApp guardada correctamente.');
+        } catch (error) {
+            console.error('Error al cerrar el cliente de WhatsApp:', error);
+            // Intentar cerrar de forma forzada si falla el método normal
+            try {
+                if (client.pupBrowser) {
+                    await client.pupBrowser.close();
+                    console.log('Navegador cerrado forzadamente.');
+                }
+            } catch (e) {
+                console.error('Error al cerrar el navegador forzadamente:', e);
+            }
+            
+            // Matar procesos de Chrome que puedan haber quedado huérfanos
+            try {
+                require('child_process').execSync('pkill -f "chrome.*--headless"');
+                console.log('Procesos de Chrome terminados.');
+            } catch (e) {
+                console.error('Error al terminar procesos de Chrome:', e);
+            }
+        }
+        client = null;
+    }
+}
+
+/**
+ * Obtiene el cliente de WhatsApp inicializado
+ * @returns {Object|null} Cliente de WhatsApp o null si no está inicializado
+ */
+function getWhatsAppClient() {
+    return client || null;
+}
+
+module.exports = {
+    initWhatsAppClient,
+    closeWhatsAppClient,
+    getWhatsAppClient
+}; 
+
+// Función auxiliar para normalizar precios
+function normalizePrice(priceString) {
+    if (!priceString || typeof priceString !== 'string') return null;
+    const cleanedString = priceString.replace(/\$|\.|CLP|UF|clp|uf/gi, '').trim();
+    const priceNum = parseInt(cleanedString, 10);
+    return isNaN(priceNum) ? null : priceNum;
+}
+
+// NUEVA FUNCIÓN PARA NORMALIZAR TEXTO (MINÚSCULAS, SIN ACENTOS, TRIM)
+function normalizeTextForSearch(text) {
+    if (typeof text !== 'string') return '';
+    return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").trim();
+}
+
+// NUEVA FUNCIÓN PARA MANEJAR BÚSQUEDA DE PROPIEDADES
+async function handlePropertySearch(senderId, tipoPropiedad, comuna, precioSolicitado, client) {
+    try {
+        console.log(`Buscando propiedades para ${senderId}: Tipo=${tipoPropiedad}, Comuna=${comuna}, Precio=${precioSolicitado}`);
+        
+        // La lógica de búsqueda ahora está centralizada en findProperties.
+        // Esta función podría ser simplificada o eliminada si handleNaturalLanguageSearch la reemplaza por completo.
+        const searchCriteria = { tipoPropiedad, comuna, valor: precioSolicitado };
+        const resultsMessage = await googleSheetsService.findProperties(searchCriteria);
+
+        await client.sendMessage(senderId, resultsMessage);
+
+        if (resultsMessage.includes("Crearé una alerta")) {
+            userPendingAlertConfirmation[senderId] = {
+                alertData: { 
+                    tipo: tipoPropiedad, 
+                    comuna: comuna, 
+                    presupuesto: precioSolicitado ? precioSolicitado.toString() : null, 
+                    otros: 'Búsqueda automática'
+                }, 
+                timestamp: Date.now() 
+            };
+            await client.sendMessage(senderId, `¿Confirmas la creación de esta alerta? (Responde Si/No)`);
+        }
+        
+    } catch (error) {
+        console.error('Error al buscar propiedades:', error);
+        await client.sendMessage(senderId, 'Hubo un error al buscar propiedades. Por favor, intenta nuevamente más tarde.');
+    }
+}
+
+// --- FUNCIÓN AUXILIAR PARA DETECTAR CONSULTAS DE PROPIEDADES ---
+function isNewPropertyQuery(text) {
+    if (!text || typeof text !== 'string') return false;
+    const keywords = [
+        'departamento', 'casa', 'arriendo', 'venta', 'alquiler', 'propiedad',
+        'parcela', 'oficina', 'local', 'terreno', 'sitio', 'bodega', 'estacionamiento',
+        'busco', 'ofrezco', 'compro', 'vendo', 'alquilo', 'renta', 'inquilino', 'dueño', 'propietario'
+    ];
+    const lowerText = text.toLowerCase();
+    return keywords.some(kw => lowerText.includes(kw));
+}

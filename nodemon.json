@@ -1,0 +1,23 @@
+{
+  "watch": ["src/", "services/", "models/", "server.js", "package.json"],
+  "ext": "js,json",
+  "ignore": [
+    "./wwjs_auth_info/**/*",
+    "wwjs_auth_info/**/*",
+    ".wwebjs_auth/**/*",
+    "./.wwebjs_auth/**/*",
+    ".wwebjs_cache/**/*",
+    "./.wwebjs_cache/**/*",
+    "./temp_audio/**/*",
+    "node_modules/**/*",
+    "./node_modules/**/*",
+    "*.log",
+    "./logs/**/*"
+  ],
+  "verbose": true,
+  "exec": "node server.js",
+  "events": {
+    "restart": "echo 'App restarted due to changes...'"
+  },
+  "signal": "SIGUSR2"
+} 

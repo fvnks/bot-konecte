@@ -1,0 +1,349 @@
+[2025-06-17T00:41:09.086Z] [STDERR] 2025-06-17T00:41:09Z INF Thank you for trying Cloudflare Tunnel. Doing so, without a Cloudflare account, is a quick way to experiment and try it out. However, be aware that these account-less Tunnels have no uptime guarantee, are subject to the Cloudflare Online Services Terms of Use (https://www.cloudflare.com/website-terms/), and Cloudflare reserves the right to investigate your use of Tunnels for violations of such terms. If you intend to use Tunnels in production you should use a pre-created named tunnel by following: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps
+2025-06-17T00:41:09Z INF Requesting new quick Tunnel on trycloudflare.com...
+[2025-06-17T00:41:12.747Z] [STDERR] 2025-06-17T00:41:12Z INF +--------------------------------------------------------------------------------------------+
+2025-06-17T00:41:12Z INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
+[2025-06-17T00:41:12.750Z] [STDERR] 2025-06-17T00:41:12Z INF |  https://thickness-departments-collector-kelkoo.trycloudflare.com                          |
+2025-06-17T00:41:12Z INF +--------------------------------------------------------------------------------------------+
+2025-06-17T00:41:12Z INF Cannot determine default configuration path. No file [config.yml config.yaml] in [~/.cloudflared ~/.cloudflare-warp ~/cloudflare-warp /etc/cloudflared /usr/local/etc/cloudflared]
+2025-06-17T00:41:12Z INF Version 2025.6.0 (Checksum 173276e3370f366493fb818ebe33cca23a9601d721ca3c03085b3f838eaf3ca9)
+2025-06-17T00:41:12Z INF GOOS: linux, GOVersion: go1.24.2, GoArch: amd64
+2025-06-17T00:41:12Z INF Settings: map[ha-connections:1 protocol:quic url:http://localhost:3001]
+[2025-06-17T00:41:12.751Z] [STDERR] 2025-06-17T00:41:12Z INF cloudflared will not automatically update if installed by a package manager.
+[2025-06-17T00:41:12.767Z] [STDERR] 2025-06-17T00:41:12Z INF Generated Connector ID: 8b8c2a13-504a-4877-8d62-64033847ae57
+[2025-06-17T00:41:12.794Z] [STDERR] 2025-06-17T00:41:12Z INF Initial protocol quic
+[2025-06-17T00:41:12.801Z] [STDERR] 2025-06-17T00:41:12Z INF ICMP proxy will use 192.168.1.11 as source for IPv4
+[2025-06-17T00:41:12.804Z] [STDERR] 2025-06-17T00:41:12Z INF ICMP proxy will use 2803:c180:2601:17b:aee0:10ff:fec2:d5a4 in zone wlp2s0 as source for IPv6
+2025-06-17T00:41:12Z WRN The user running cloudflared process has a GID (group ID) that is not within ping_group_range. You might need to add that user to a group within that range, or instead update the range to encompass a group the user is already in by modifying /proc/sys/net/ipv4/ping_group_range. Otherwise cloudflared will not be able to ping this network error="Group ID 1000 is not between ping group 1 to 0"
+2025-06-17T00:41:12Z WRN ICMP proxy feature is disabled error="cannot create ICMPv4 proxy: Group ID 1000 is not between ping group 1 to 0 nor ICMPv6 proxy: socket: permission denied"
+[2025-06-17T00:41:12.849Z] [STDERR] 2025-06-17T00:41:12Z INF ICMP proxy will use 192.168.1.11 as source for IPv4
+[2025-06-17T00:41:12.855Z] [STDERR] 2025-06-17T00:41:12Z INF ICMP proxy will use 2803:c180:2601:17b:aee0:10ff:fec2:d5a4 in zone wlp2s0 as source for IPv6
+2025-06-17T00:41:12Z INF Starting metrics server on 127.0.0.1:20242/metrics
+[2025-06-17T00:41:13.018Z] [STDERR] 2025-06-17T00:41:13Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=0 event=0 ip=198.41.200.73
+[2025-06-17T00:41:13.025Z] [STDERR] 2025/06/17 00:41:13 failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 7168 kiB, got: 416 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+[2025-06-17T00:41:13.280Z] [STDERR] 2025-06-17T00:41:13Z INF Registered tunnel connection connIndex=0 connection=6f38daa0-cb59-41a0-b889-d746b25873ad event=0 ip=198.41.200.73 location=scl03 protocol=quic
+[2025-06-18T00:41:13.331Z] [STDERR] 2025-06-18T00:41:13Z WRN Your version 2025.6.0 is outdated. We recommend upgrading it to 2025.6.1
+[2025-06-18T08:34:10.717Z] [STDERR] 2025-06-18T08:34:10Z ERR Failed to serve tunnel connection error="failed to accept QUIC stream: write udp [::]:35749->198.41.200.73:7844: sendmsg: network is unreachable" connIndex=0 event=0 ip=198.41.200.73
+[2025-06-18T08:34:10.720Z] [STDERR] 2025-06-18T08:34:10Z ERR Serve tunnel error error="failed to accept QUIC stream: write udp [::]:35749->198.41.200.73:7844: sendmsg: network is unreachable" connIndex=0 event=0 ip=198.41.200.73
+2025-06-18T08:34:10Z INF Retrying connection in up to 1s connIndex=0 event=0 ip=198.41.200.73
+[2025-06-18T08:34:11.197Z] [STDERR] 2025-06-18T08:34:11Z ERR Connection terminated error="failed to accept QUIC stream: write udp [::]:35749->198.41.200.73:7844: sendmsg: network is unreachable" connIndex=0
+[2025-06-18T08:34:11.316Z] [STDERR] 2025-06-18T08:34:11Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=0 event=0 ip=198.41.200.73
+[2025-06-18T08:34:11.320Z] [STDERR] 2025-06-18T08:34:11Z ERR Failed to dial a quic connection error="failed to dial to edge with quic: write udp [::]:35749->198.41.200.73:7844: sendmsg: network is unreachable" connIndex=0 event=0 ip=198.41.200.73
+2025-06-18T08:34:11Z INF Retrying connection in up to 4s connIndex=0 event=0 ip=198.41.200.73
+[2025-06-18T08:34:13.247Z] [STDERR] 2025-06-18T08:34:13Z ERR Connection terminated error="failed to dial to edge with quic: write udp [::]:35749->198.41.200.73:7844: sendmsg: network is unreachable" connIndex=0
+[2025-06-18T08:34:30.009Z] [STDERR] 2025-06-18T08:34:30Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=0 event=0 ip=198.41.192.167
+[2025-06-18T08:34:30.798Z] [STDERR] 2025-06-18T08:34:30Z INF Registered tunnel connection connIndex=0 connection=ff62d55b-b776-4009-9fb9-6b9a5fe5ac9f event=0 ip=198.41.192.167 location=scl05 protocol=quic
+[2025-06-18T21:59:33.925Z] [STDERR] 2025-06-18T21:59:33Z ERR Failed to serve tunnel connection error="timeout: no recent network activity" connIndex=0 event=0 ip=198.41.192.167
+[2025-06-18T21:59:33.927Z] [STDERR] 2025-06-18T21:59:33Z ERR Serve tunnel error error="timeout: no recent network activity" connIndex=0 event=0 ip=198.41.192.167
+2025-06-18T21:59:33Z INF Retrying connection in up to 1s connIndex=0 event=0 ip=198.41.192.167
+[2025-06-18T21:59:34.680Z] [STDERR] 2025-06-18T21:59:34Z ERR Connection terminated error="timeout: no recent network activity" connIndex=0
+[2025-06-18T21:59:54.195Z] [STDERR] 2025-06-18T21:59:54Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=0 event=0 ip=198.41.192.107
+[2025-06-18T21:59:54.595Z] [STDERR] 2025-06-18T21:59:54Z INF Registered tunnel connection connIndex=0 connection=633f0249-05d6-492f-9651-11f8a771c119 event=0 ip=198.41.192.107 location=mia02 protocol=quic
+[2025-06-19T00:41:13.314Z] [STDERR] 2025-06-19T00:41:13Z WRN Your version 2025.6.0 is outdated. We recommend upgrading it to 2025.6.1
+[2025-06-19T08:12:09.643Z] [STDERR] 2025-06-19T08:12:09Z ERR Failed to serve tunnel connection error="write udp [::]:35749->198.41.192.107:7844: sendmsg: network is unreachable" connIndex=0 event=0 ip=198.41.192.107
+[2025-06-19T08:12:09.644Z] [STDERR] 2025-06-19T08:12:09Z ERR Serve tunnel error error="write udp [::]:35749->198.41.192.107:7844: sendmsg: network is unreachable" connIndex=0 event=0 ip=198.41.192.107
+2025-06-19T08:12:09Z INF Retrying connection in up to 1s connIndex=0 event=0 ip=198.41.192.107
+[2025-06-19T08:12:10.237Z] [STDERR] 2025-06-19T08:12:10Z ERR Connection terminated error="write udp [::]:35749->198.41.192.107:7844: sendmsg: network is unreachable" connIndex=0
+[2025-06-19T08:12:10.418Z] [STDERR] 2025-06-19T08:12:10Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=0 event=0 ip=198.41.192.107
+[2025-06-19T08:12:10.424Z] [STDERR] 2025-06-19T08:12:10Z ERR Failed to dial a quic connection error="failed to dial to edge with quic: write udp [::]:35749->198.41.192.107:7844: sendmsg: network is unreachable" connIndex=0 event=0 ip=198.41.192.107
+2025-06-19T08:12:10Z INF Retrying connection in up to 4s connIndex=0 event=0 ip=198.41.192.107
+[2025-06-19T08:12:10.711Z] [STDERR] 2025-06-19T08:12:10Z ERR Connection terminated error="failed to dial to edge with quic: write udp [::]:35749->198.41.192.107:7844: sendmsg: network is unreachable" connIndex=0
+[2025-06-19T08:12:22.020Z] [STDERR] 2025-06-19T08:12:22Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=0 event=0 ip=198.41.192.47
+[2025-06-19T08:12:22.881Z] [STDERR] 2025-06-19T08:12:22Z INF Registered tunnel connection connIndex=0 connection=ade1e2b3-2bde-4c3c-8c24-32aa143eb603 event=0 ip=198.41.192.47 location=scl05 protocol=quic
+[2025-06-19T20:15:09.354Z] [SIGNAL] Recibida señal SIGINT. Cerrando túnel...
+[2025-06-19T20:15:13.231Z] [STDERR] 2025-06-19T20:15:13Z INF Thank you for trying Cloudflare Tunnel. Doing so, without a Cloudflare account, is a quick way to experiment and try it out. However, be aware that these account-less Tunnels have no uptime guarantee, are subject to the Cloudflare Online Services Terms of Use (https://www.cloudflare.com/website-terms/), and Cloudflare reserves the right to investigate your use of Tunnels for violations of such terms. If you intend to use Tunnels in production you should use a pre-created named tunnel by following: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps
+[2025-06-19T20:15:13.238Z] [STDERR] 2025-06-19T20:15:13Z INF Requesting new quick Tunnel on trycloudflare.com...
+[2025-06-19T20:15:16.982Z] [STDERR] 2025-06-19T20:15:16Z INF +--------------------------------------------------------------------------------------------+
+2025-06-19T20:15:16Z INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
+2025-06-19T20:15:16Z INF |  https://deposit-mighty-folk-performed.trycloudflare.com                                   |
+2025-06-19T20:15:16Z INF +--------------------------------------------------------------------------------------------+
+[2025-06-19T20:15:16.983Z] [STDERR] 2025-06-19T20:15:16Z INF Cannot determine default configuration path. No file [config.yml config.yaml] in [~/.cloudflared ~/.cloudflare-warp ~/cloudflare-warp /etc/cloudflared /usr/local/etc/cloudflared]
+2025-06-19T20:15:16Z INF Version 2025.6.0 (Checksum 173276e3370f366493fb818ebe33cca23a9601d721ca3c03085b3f838eaf3ca9)
+2025-06-19T20:15:16Z INF GOOS: linux, GOVersion: go1.24.2, GoArch: amd64
+2025-06-19T20:15:16Z INF Settings: map[ha-connections:1 protocol:quic url:http://localhost:3001]
+[2025-06-19T20:15:16.985Z] [STDERR] 2025-06-19T20:15:16Z INF cloudflared will not automatically update if installed by a package manager.
+[2025-06-19T20:15:16.996Z] [STDERR] 2025-06-19T20:15:16Z INF Generated Connector ID: e65899e0-cba3-48e3-ade5-e5d289ee9aa7
+[2025-06-19T20:15:17.019Z] [STDERR] 2025-06-19T20:15:17Z INF Initial protocol quic
+[2025-06-19T20:15:17.020Z] [STDERR] 2025-06-19T20:15:17Z INF ICMP proxy will use 192.168.1.11 as source for IPv4
+[2025-06-19T20:15:17.026Z] [STDERR] 2025-06-19T20:15:17Z INF ICMP proxy will use 2803:c180:2601:17b:aee0:10ff:fec2:d5a4 in zone wlp2s0 as source for IPv6
+2025-06-19T20:15:17Z WRN The user running cloudflared process has a GID (group ID) that is not within ping_group_range. You might need to add that user to a group within that range, or instead update the range to encompass a group the user is already in by modifying /proc/sys/net/ipv4/ping_group_range. Otherwise cloudflared will not be able to ping this network error="Group ID 1000 is not between ping group 1 to 0"
+2025-06-19T20:15:17Z WRN ICMP proxy feature is disabled error="cannot create ICMPv4 proxy: Group ID 1000 is not between ping group 1 to 0 nor ICMPv6 proxy: socket: permission denied"
+[2025-06-19T20:15:17.078Z] [STDERR] 2025-06-19T20:15:17Z INF ICMP proxy will use 192.168.1.11 as source for IPv4
+[2025-06-19T20:15:17.080Z] [STDERR] 2025-06-19T20:15:17Z INF ICMP proxy will use 2803:c180:2601:17b:aee0:10ff:fec2:d5a4 in zone wlp2s0 as source for IPv6
+2025-06-19T20:15:17Z INF Starting metrics server on 127.0.0.1:20242/metrics
+[2025-06-19T20:15:17.120Z] [STDERR] 2025-06-19T20:15:17Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=0 event=0 ip=198.41.192.7
+2025/06/19 20:15:17 failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 7168 kiB, got: 416 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+[2025-06-19T20:15:17.906Z] [STDERR] 2025-06-19T20:15:17Z INF Registered tunnel connection connIndex=0 connection=64ac0a09-ea04-4eb6-b7f3-c7a32bba7b0e event=0 ip=198.41.192.7 location=scl05 protocol=quic
+[2025-06-20T03:18:00.164Z] [STDERR] 2025-06-20T03:18:00Z WRN Failed to serve tunnel connection error="timeout: no recent network activity" connIndex=0 event=0 ip=198.41.192.7
+[2025-06-20T03:18:00.167Z] [STDERR] 2025-06-20T03:18:00Z ERR Serve tunnel error error="timeout: no recent network activity" connIndex=0 event=0 ip=198.41.192.7
+2025-06-20T03:18:00Z INF Retrying connection in up to 1s connIndex=0 event=0 ip=198.41.192.7
+[2025-06-20T03:18:00.741Z] [STDERR] 2025-06-20T03:18:00Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=0 event=0 ip=198.41.200.53
+[2025-06-20T03:18:01.082Z] [STDERR] 2025-06-20T03:18:01Z INF Registered tunnel connection connIndex=0 connection=f676f597-bfd9-4bf4-b50c-69fd88953650 event=0 ip=198.41.200.53 location=scl03 protocol=quic
+[2025-06-20T20:04:21.708Z] [STDERR] 2025-06-20T20:04:21Z INF Thank you for trying Cloudflare Tunnel. Doing so, without a Cloudflare account, is a quick way to experiment and try it out. However, be aware that these account-less Tunnels have no uptime guarantee, are subject to the Cloudflare Online Services Terms of Use (https://www.cloudflare.com/website-terms/), and Cloudflare reserves the right to investigate your use of Tunnels for violations of such terms. If you intend to use Tunnels in production you should use a pre-created named tunnel by following: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps
+[2025-06-20T20:04:21.717Z] [STDERR] 2025-06-20T20:04:21Z INF Requesting new quick Tunnel on trycloudflare.com...
+[2025-06-20T20:04:26.017Z] [STDERR] 2025-06-20T20:04:26Z INF +--------------------------------------------------------------------------------------------+
+2025-06-20T20:04:26Z INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
+2025-06-20T20:04:26Z INF |  https://gravity-cambodia-hottest-hacker.trycloudflare.com                                 |
+2025-06-20T20:04:26Z INF +--------------------------------------------------------------------------------------------+
+2025-06-20T20:04:26Z INF Cannot determine default configuration path. No file [config.yml config.yaml] in [~/.cloudflared ~/.cloudflare-warp ~/cloudflare-warp /etc/cloudflared /usr/local/etc/cloudflared]
+2025-06-20T20:04:26Z INF Version 2025.6.0 (Checksum 173276e3370f366493fb818ebe33cca23a9601d721ca3c03085b3f838eaf3ca9)
+2025-06-20T20:04:26Z INF GOOS: linux, GOVersion: go1.24.2, GoArch: amd64
+2025-06-20T20:04:26Z INF Settings: map[ha-connections:1 protocol:quic url:http://localhost:3001]
+[2025-06-20T20:04:26.018Z] [STDERR] 2025-06-20T20:04:26Z INF cloudflared will not automatically update if installed by a package manager.
+[2025-06-20T20:04:26.036Z] [STDERR] 2025-06-20T20:04:26Z INF Generated Connector ID: 28486f7f-3cc2-45fb-b183-aa665264ff25
+[2025-06-20T20:04:26.080Z] [STDERR] 2025-06-20T20:04:26Z INF Initial protocol quic
+[2025-06-20T20:04:26.084Z] [STDERR] 2025-06-20T20:04:26Z INF ICMP proxy will use 192.168.1.11 as source for IPv4
+2025-06-20T20:04:26Z INF ICMP proxy will use 2803:c180:2601:17b:aee0:10ff:fec2:d5a4 in zone wlp2s0 as source for IPv6
+2025-06-20T20:04:26Z WRN The user running cloudflared process has a GID (group ID) that is not within ping_group_range. You might need to add that user to a group within that range, or instead update the range to encompass a group the user is already in by modifying /proc/sys/net/ipv4/ping_group_range. Otherwise cloudflared will not be able to ping this network error="Group ID 1000 is not between ping group 1 to 0"
+2025-06-20T20:04:26Z WRN ICMP proxy feature is disabled error="cannot create ICMPv4 proxy: Group ID 1000 is not between ping group 1 to 0 nor ICMPv6 proxy: socket: permission denied"
+[2025-06-20T20:04:26.156Z] [STDERR] 2025-06-20T20:04:26Z INF ICMP proxy will use 192.168.1.11 as source for IPv4
+[2025-06-20T20:04:26.161Z] [STDERR] 2025-06-20T20:04:26Z INF ICMP proxy will use 2803:c180:2601:17b:aee0:10ff:fec2:d5a4 in zone wlp2s0 as source for IPv6
+2025-06-20T20:04:26Z INF Starting metrics server on 127.0.0.1:20241/metrics
+[2025-06-20T20:04:26.207Z] [STDERR] 2025-06-20T20:04:26Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=0 event=0 ip=198.41.200.193
+2025/06/20 20:04:26 failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 7168 kiB, got: 416 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+[2025-06-20T20:04:26.444Z] [STDERR] 2025-06-20T20:04:26Z INF Registered tunnel connection connIndex=0 connection=e8fab4f7-0b53-496e-b682-8a012e7de3e4 event=0 ip=198.41.200.193 location=scl03 protocol=quic
+[2025-06-20T22:45:45.747Z] [SIGNAL] Recibida señal SIGINT. Cerrando túnel...
+[2025-06-20T22:45:46.855Z] [STDERR] 2025-06-20T22:45:46Z INF Thank you for trying Cloudflare Tunnel. Doing so, without a Cloudflare account, is a quick way to experiment and try it out. However, be aware that these account-less Tunnels have no uptime guarantee, are subject to the Cloudflare Online Services Terms of Use (https://www.cloudflare.com/website-terms/), and Cloudflare reserves the right to investigate your use of Tunnels for violations of such terms. If you intend to use Tunnels in production you should use a pre-created named tunnel by following: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps
+2025-06-20T22:45:46Z INF Requesting new quick Tunnel on trycloudflare.com...
+[2025-06-20T22:45:50.189Z] [STDERR] 2025-06-20T22:45:50Z INF +--------------------------------------------------------------------------------------------+
+[2025-06-20T22:45:50.190Z] [STDERR] 2025-06-20T22:45:50Z INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
+2025-06-20T22:45:50Z INF |  https://rounds-constraint-stress-u.trycloudflare.com                                      |
+2025-06-20T22:45:50Z INF +--------------------------------------------------------------------------------------------+
+[2025-06-20T22:45:50.193Z] [STDERR] 2025-06-20T22:45:50Z INF Cannot determine default configuration path. No file [config.yml config.yaml] in [~/.cloudflared ~/.cloudflare-warp ~/cloudflare-warp /etc/cloudflared /usr/local/etc/cloudflared]
+[2025-06-20T22:45:50.195Z] [STDERR] 2025-06-20T22:45:50Z INF Version 2025.6.0 (Checksum 173276e3370f366493fb818ebe33cca23a9601d721ca3c03085b3f838eaf3ca9)
+2025-06-20T22:45:50Z INF GOOS: linux, GOVersion: go1.24.2, GoArch: amd64
+2025-06-20T22:45:50Z INF Settings: map[ha-connections:1 protocol:quic url:http://localhost:3001]
+[2025-06-20T22:45:50.200Z] [STDERR] 2025-06-20T22:45:50Z INF cloudflared will not automatically update if installed by a package manager.
+[2025-06-20T22:45:50.216Z] [STDERR] 2025-06-20T22:45:50Z INF Generated Connector ID: f3151fa7-aeca-4fd2-b0ee-e42cb4bf0524
+[2025-06-20T22:45:50.236Z] [STDERR] 2025-06-20T22:45:50Z INF Initial protocol quic
+[2025-06-20T22:45:50.240Z] [STDERR] 2025-06-20T22:45:50Z INF ICMP proxy will use 192.168.1.11 as source for IPv4
+[2025-06-20T22:45:50.242Z] [STDERR] 2025-06-20T22:45:50Z INF ICMP proxy will use 2803:c180:2601:17b:aee0:10ff:fec2:d5a4 in zone wlp2s0 as source for IPv6
+2025-06-20T22:45:50Z WRN The user running cloudflared process has a GID (group ID) that is not within ping_group_range. You might need to add that user to a group within that range, or instead update the range to encompass a group the user is already in by modifying /proc/sys/net/ipv4/ping_group_range. Otherwise cloudflared will not be able to ping this network error="Group ID 1000 is not between ping group 1 to 0"
+2025-06-20T22:45:50Z WRN ICMP proxy feature is disabled error="cannot create ICMPv4 proxy: Group ID 1000 is not between ping group 1 to 0 nor ICMPv6 proxy: socket: permission denied"
+[2025-06-20T22:45:50.316Z] [STDERR] 2025-06-20T22:45:50Z INF ICMP proxy will use 192.168.1.11 as source for IPv4
+[2025-06-20T22:45:50.319Z] [STDERR] 2025-06-20T22:45:50Z INF ICMP proxy will use 2803:c180:2601:17b:aee0:10ff:fec2:d5a4 in zone wlp2s0 as source for IPv6
+[2025-06-20T22:45:50.320Z] [STDERR] 2025-06-20T22:45:50Z INF Starting metrics server on 127.0.0.1:20241/metrics
+[2025-06-20T22:45:50.380Z] [STDERR] 2025-06-20T22:45:50Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=0 event=0 ip=198.41.200.13
+[2025-06-20T22:45:50.382Z] [STDERR] 2025/06/20 22:45:50 failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 7168 kiB, got: 416 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+[2025-06-20T22:45:50.669Z] [STDERR] 2025-06-20T22:45:50Z INF Registered tunnel connection connIndex=0 connection=5c64b744-c6d2-4f0c-acfe-40e89ad276f9 event=0 ip=198.41.200.13 location=scl03 protocol=quic
+[2025-06-20T23:23:40.968Z] [STDERR] 2025-06-20T23:23:40Z INF Initiating graceful shutdown due to signal interrupt ...
+[2025-06-23T18:08:24.217Z] [STDERR] 2025-06-23T18:08:24Z INF Thank you for trying Cloudflare Tunnel. Doing so, without a Cloudflare account, is a quick way to experiment and try it out. However, be aware that these account-less Tunnels have no uptime guarantee, are subject to the Cloudflare Online Services Terms of Use (https://www.cloudflare.com/website-terms/), and Cloudflare reserves the right to investigate your use of Tunnels for violations of such terms. If you intend to use Tunnels in production you should use a pre-created named tunnel by following: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps
+2025-06-23T18:08:24Z INF Requesting new quick Tunnel on trycloudflare.com...
+[2025-06-23T18:08:28.823Z] [STDERR] 2025-06-23T18:08:28Z INF +--------------------------------------------------------------------------------------------+
+2025-06-23T18:08:28Z INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
+2025-06-23T18:08:28Z INF |  https://alexander-brilliant-dietary-electoral.trycloudflare.com                           |
+2025-06-23T18:08:28Z INF +--------------------------------------------------------------------------------------------+
+[2025-06-23T18:08:28.824Z] [STDERR] 2025-06-23T18:08:28Z INF Version 2025.6.0 (Checksum 173276e3370f366493fb818ebe33cca23a9601d721ca3c03085b3f838eaf3ca9)
+2025-06-23T18:08:28Z INF GOOS: linux, GOVersion: go1.24.2, GoArch: amd64
+2025-06-23T18:08:28Z INF Settings: map[cred-file:/home/rodrigod/.cloudflared/7f599f12-2c04-4b97-ac8c-cdce94e225f4.json credentials-file:/home/rodrigod/.cloudflared/7f599f12-2c04-4b97-ac8c-cdce94e225f4.json ha-connections:1 protocol:quic url:http://localhost:3001]
+[2025-06-23T18:08:28.827Z] [STDERR] 2025-06-23T18:08:28Z INF cloudflared will not automatically update if installed by a package manager.
+[2025-06-23T18:08:28.838Z] [STDERR] 2025-06-23T18:08:28Z INF Generated Connector ID: 993f8f44-3dd0-4577-a6da-ffcdad540701
+[2025-06-23T18:08:28.849Z] [STDERR] 2025-06-23T18:08:28Z INF Initial protocol quic
+[2025-06-23T18:08:28.851Z] [STDERR] 2025-06-23T18:08:28Z INF ICMP proxy will use 192.168.1.11 as source for IPv4
+[2025-06-23T18:08:28.852Z] [STDERR] 2025-06-23T18:08:28Z INF ICMP proxy will use 2803:c180:2601:17b:aee0:10ff:fec2:d5a4 in zone wlp2s0 as source for IPv6
+2025-06-23T18:08:28Z WRN The user running cloudflared process has a GID (group ID) that is not within ping_group_range. You might need to add that user to a group within that range, or instead update the range to encompass a group the user is already in by modifying /proc/sys/net/ipv4/ping_group_range. Otherwise cloudflared will not be able to ping this network error="Group ID 1000 is not between ping group 1 to 0"
+2025-06-23T18:08:28Z WRN ICMP proxy feature is disabled error="cannot create ICMPv4 proxy: Group ID 1000 is not between ping group 1 to 0 nor ICMPv6 proxy: socket: permission denied"
+[2025-06-23T18:08:28.921Z] [STDERR] 2025-06-23T18:08:28Z INF ICMP proxy will use 192.168.1.11 as source for IPv4
+[2025-06-23T18:08:28.922Z] [STDERR] 2025-06-23T18:08:28Z INF ICMP proxy will use 2803:c180:2601:17b:aee0:10ff:fec2:d5a4 in zone wlp2s0 as source for IPv6
+2025-06-23T18:08:28Z INF Starting metrics server on 127.0.0.1:20243/metrics
+[2025-06-23T18:08:28.969Z] [STDERR] 2025-06-23T18:08:28Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=0 event=0 ip=198.41.192.27
+[2025-06-23T18:08:28.970Z] [STDERR] 2025/06/23 18:08:28 failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 7168 kiB, got: 416 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+[2025-06-23T18:08:30.050Z] [STDERR] 2025-06-23T18:08:30Z INF Registered tunnel connection connIndex=0 connection=e35b179d-9d1a-4521-b804-83cfbcb71f59 event=0 ip=198.41.192.27 location=scl05 protocol=quic
+[2025-06-23T23:14:52.783Z] [STDERR] 2025-06-23T23:14:52Z ERR Failed to serve tunnel connection error="write udp [::]:39702->198.41.192.27:7844: sendmsg: network is unreachable" connIndex=0 event=0 ip=198.41.192.27
+2025-06-23T23:14:52Z ERR Serve tunnel error error="write udp [::]:39702->198.41.192.27:7844: sendmsg: network is unreachable" connIndex=0 event=0 ip=198.41.192.27
+2025-06-23T23:14:52Z INF Retrying connection in up to 1s connIndex=0 event=0 ip=198.41.192.27
+[2025-06-23T23:14:54.239Z] [STDERR] 2025-06-23T23:14:54Z ERR Connection terminated error="write udp [::]:39702->198.41.192.27:7844: sendmsg: network is unreachable" connIndex=0
+[2025-06-23T23:14:59.350Z] [STDERR] 2025-06-23T23:14:59Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=0 event=0 ip=198.41.192.27
+[2025-06-23T23:14:59.358Z] [STDERR] 2025-06-23T23:14:59Z ERR Failed to dial a quic connection error="failed to dial to edge with quic: write udp [::]:39702->198.41.192.27:7844: sendmsg: network is unreachable" connIndex=0 event=0 ip=198.41.192.27
+[2025-06-23T23:14:59.359Z] [STDERR] 2025-06-23T23:14:59Z INF Retrying connection in up to 4s connIndex=0 event=0 ip=198.41.192.27
+[2025-06-23T23:15:01.591Z] [STDERR] 2025-06-23T23:15:01Z ERR Connection terminated error="failed to dial to edge with quic: write udp [::]:39702->198.41.192.27:7844: sendmsg: network is unreachable" connIndex=0
+[2025-06-23T23:15:35.395Z] [STDERR] 2025-06-23T23:15:35Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=0 event=0 ip=198.41.192.37
+[2025-06-23T23:15:36.253Z] [STDERR] 2025-06-23T23:15:36Z INF Registered tunnel connection connIndex=0 connection=51989ffa-fe0b-4ac4-b473-bbd501f3fcc7 event=0 ip=198.41.192.37 location=scl05 protocol=quic
+[2025-06-23T23:34:13.681Z] [STDERR] 2025-06-23T23:34:13Z ERR Failed to serve tunnel connection error="timeout: no recent network activity" connIndex=0 event=0 ip=198.41.192.37
+[2025-06-23T23:34:13.683Z] [STDERR] 2025-06-23T23:34:13Z ERR Serve tunnel error error="timeout: no recent network activity" connIndex=0 event=0 ip=198.41.192.37
+2025-06-23T23:34:13Z INF Retrying connection in up to 1s connIndex=0 event=0 ip=198.41.192.37
+[2025-06-23T23:34:14.337Z] [STDERR] 2025-06-23T23:34:14Z ERR Connection terminated error="timeout: no recent network activity" connIndex=0
+[2025-06-23T23:34:25.026Z] [STDERR] 2025-06-23T23:34:25Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=0 event=0 ip=198.41.192.67
+[2025-06-23T23:34:25.033Z] [STDERR] 2025-06-23T23:34:25Z ERR Failed to dial a quic connection error="failed to dial to edge with quic: write udp [::]:39702->198.41.192.67:7844: sendmsg: network is unreachable" connIndex=0 event=0 ip=198.41.192.67
+[2025-06-23T23:34:25.034Z] [STDERR] 2025-06-23T23:34:25Z INF Retrying connection in up to 4s connIndex=0 event=0 ip=198.41.192.67
+[2025-06-23T23:34:25.425Z] [STDERR] 2025-06-23T23:34:25Z ERR Connection terminated error="failed to dial to edge with quic: write udp [::]:39702->198.41.192.67:7844: sendmsg: network is unreachable" connIndex=0
+[2025-06-23T23:34:40.969Z] [STDERR] 2025-06-23T23:34:40Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=0 event=0 ip=198.41.200.53
+[2025-06-23T23:34:40.977Z] [STDERR] 2025-06-23T23:34:40Z ERR Failed to dial a quic connection error="failed to dial to edge with quic: write udp [::]:39702->198.41.200.53:7844: sendmsg: network is unreachable" connIndex=0 event=0 ip=198.41.200.53
+[2025-06-23T23:34:40.978Z] [STDERR] 2025-06-23T23:34:40Z INF Retrying connection in up to 8s connIndex=0 event=0 ip=198.41.200.53
+[2025-06-23T23:34:47.001Z] [STDERR] 2025-06-23T23:34:47Z ERR Connection terminated error="failed to dial to edge with quic: write udp [::]:39702->198.41.200.53:7844: sendmsg: network is unreachable" connIndex=0
+[2025-06-23T23:34:47.350Z] [STDERR] 2025-06-23T23:34:47Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=0 event=0 ip=198.41.192.27
+2025-06-23T23:34:47Z ERR Failed to dial a quic connection error="failed to dial to edge with quic: write udp [::]:39702->198.41.192.27:7844: sendmsg: network is unreachable" connIndex=0 event=0 ip=198.41.192.27
+2025-06-23T23:34:47Z INF Retrying connection in up to 16s connIndex=0 event=0 ip=198.41.192.27
+[2025-06-23T23:34:56.624Z] [STDERR] 2025-06-23T23:34:56Z ERR Connection terminated error="failed to dial to edge with quic: write udp [::]:39702->198.41.192.27:7844: sendmsg: network is unreachable" connIndex=0
+[2025-06-23T23:36:14.436Z] [STDERR] 2025-06-23T23:36:14Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=0 event=0 ip=198.41.192.107
+[2025-06-23T23:36:15.273Z] [STDERR] 2025-06-23T23:36:15Z INF Registered tunnel connection connIndex=0 connection=16fadda1-948b-4855-ac0a-9af32d475564 event=0 ip=198.41.192.107 location=scl05 protocol=quic
+[2025-06-24T03:31:32.716Z] [STDERR] 2025-06-24T03:31:32Z INF Initiating graceful shutdown due to signal interrupt ...
+[2025-06-24T03:32:25.670Z] [STDERR] 2025-06-24T03:32:25Z INF Thank you for trying Cloudflare Tunnel. Doing so, without a Cloudflare account, is a quick way to experiment and try it out. However, be aware that these account-less Tunnels have no uptime guarantee, are subject to the Cloudflare Online Services Terms of Use (https://www.cloudflare.com/website-terms/), and Cloudflare reserves the right to investigate your use of Tunnels for violations of such terms. If you intend to use Tunnels in production you should use a pre-created named tunnel by following: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps
+2025-06-24T03:32:25Z INF Requesting new quick Tunnel on trycloudflare.com...
+[2025-06-24T03:32:29.777Z] [STDERR] 2025-06-24T03:32:29Z INF +--------------------------------------------------------------------------------------------+
+2025-06-24T03:32:29Z INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
+2025-06-24T03:32:29Z INF |  https://asks-shock-pending-insider.trycloudflare.com                                      |
+2025-06-24T03:32:29Z INF +--------------------------------------------------------------------------------------------+
+2025-06-24T03:32:29Z INF Version 2025.6.0 (Checksum 173276e3370f366493fb818ebe33cca23a9601d721ca3c03085b3f838eaf3ca9)
+2025-06-24T03:32:29Z INF GOOS: linux, GOVersion: go1.24.2, GoArch: amd64
+[2025-06-24T03:32:29.779Z] [STDERR] 2025-06-24T03:32:29Z INF Settings: map[cred-file:/home/rodrigod/.cloudflared/7f599f12-2c04-4b97-ac8c-cdce94e225f4.json credentials-file:/home/rodrigod/.cloudflared/7f599f12-2c04-4b97-ac8c-cdce94e225f4.json ha-connections:1 protocol:quic url:http://localhost:3001]
+[2025-06-24T03:32:29.784Z] [STDERR] 2025-06-24T03:32:29Z INF cloudflared will not automatically update if installed by a package manager.
+[2025-06-24T03:32:29.805Z] [STDERR] 2025-06-24T03:32:29Z INF Generated Connector ID: 76cf0c57-3f54-4a1d-ac06-1d4e2bb36df2
+[2025-06-24T03:32:29.819Z] [STDERR] 2025-06-24T03:32:29Z INF Initial protocol quic
+2025-06-24T03:32:29Z INF ICMP proxy will use 192.168.1.11 as source for IPv4
+2025-06-24T03:32:29Z INF ICMP proxy will use 2803:c180:2601:17b:aee0:10ff:fec2:d5a4 in zone wlp2s0 as source for IPv6
+[2025-06-24T03:32:29.822Z] [STDERR] 2025-06-24T03:32:29Z WRN The user running cloudflared process has a GID (group ID) that is not within ping_group_range. You might need to add that user to a group within that range, or instead update the range to encompass a group the user is already in by modifying /proc/sys/net/ipv4/ping_group_range. Otherwise cloudflared will not be able to ping this network error="Group ID 1000 is not between ping group 1 to 0"
+[2025-06-24T03:32:29.826Z] [STDERR] 2025-06-24T03:32:29Z WRN ICMP proxy feature is disabled error="cannot create ICMPv4 proxy: Group ID 1000 is not between ping group 1 to 0 nor ICMPv6 proxy: socket: permission denied"
+[2025-06-24T03:32:29.883Z] [STDERR] 2025-06-24T03:32:29Z INF ICMP proxy will use 192.168.1.11 as source for IPv4
+[2025-06-24T03:32:29.889Z] [STDERR] 2025-06-24T03:32:29Z INF ICMP proxy will use 2803:c180:2601:17b:aee0:10ff:fec2:d5a4 in zone wlp2s0 as source for IPv6
+2025-06-24T03:32:29Z INF Starting metrics server on 127.0.0.1:20242/metrics
+[2025-06-24T03:32:29.963Z] [STDERR] 2025-06-24T03:32:29Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=0 event=0 ip=198.41.192.37
+2025/06/24 03:32:29 failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 7168 kiB, got: 416 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+[2025-06-24T03:32:30.201Z] [STDERR] 2025-06-24T03:32:30Z INF Registered tunnel connection connIndex=0 connection=8ef5cc2e-3760-4171-bee9-2a7dc21c44c6 event=0 ip=198.41.192.37 location=scl05 protocol=quic
+[2025-06-24T08:10:06.815Z] [STDERR] 2025-06-24T08:10:06Z ERR Failed to serve tunnel connection error="write udp [::]:50414->198.41.192.37:7844: sendmsg: network is unreachable" connIndex=0 event=0 ip=198.41.192.37
+2025-06-24T08:10:06Z ERR Serve tunnel error error="write udp [::]:50414->198.41.192.37:7844: sendmsg: network is unreachable" connIndex=0 event=0 ip=198.41.192.37
+2025-06-24T08:10:06Z INF Retrying connection in up to 1s connIndex=0 event=0 ip=198.41.192.37
+[2025-06-24T08:10:07.055Z] [STDERR] 2025-06-24T08:10:07Z ERR Connection terminated error="write udp [::]:50414->198.41.192.37:7844: sendmsg: network is unreachable" connIndex=0
+[2025-06-24T08:10:11.766Z] [STDERR] 2025-06-24T08:10:11Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=0 event=0 ip=198.41.192.37
+[2025-06-24T08:10:11.797Z] [STDERR] 2025-06-24T08:10:11Z ERR Failed to dial a quic connection error="failed to dial to edge with quic: write udp [::]:50414->198.41.192.37:7844: sendmsg: network is unreachable" connIndex=0 event=0 ip=198.41.192.37
+2025-06-24T08:10:11Z INF Retrying connection in up to 4s connIndex=0 event=0 ip=198.41.192.37
+[2025-06-24T08:10:15.778Z] [STDERR] 2025-06-24T08:10:15Z ERR Connection terminated error="failed to dial to edge with quic: write udp [::]:50414->198.41.192.37:7844: sendmsg: network is unreachable" connIndex=0
+[2025-06-24T08:10:54.049Z] [STDERR] 2025-06-24T08:10:54Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=0 event=0 ip=198.41.192.167
+[2025-06-24T08:10:54.798Z] [STDERR] 2025-06-24T08:10:54Z INF Registered tunnel connection connIndex=0 connection=1611fb5e-136d-437c-b846-155ea83660e8 event=0 ip=198.41.192.167 location=scl05 protocol=quic
+[2025-06-24T16:18:45.223Z] [SIGNAL] Recibida señal SIGINT. Cerrando túnel...
+[2025-06-24T16:18:46.432Z] [STDERR] 2025-06-24T16:18:46Z INF Thank you for trying Cloudflare Tunnel. Doing so, without a Cloudflare account, is a quick way to experiment and try it out. However, be aware that these account-less Tunnels have no uptime guarantee, are subject to the Cloudflare Online Services Terms of Use (https://www.cloudflare.com/website-terms/), and Cloudflare reserves the right to investigate your use of Tunnels for violations of such terms. If you intend to use Tunnels in production you should use a pre-created named tunnel by following: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps
+2025-06-24T16:18:46Z INF Requesting new quick Tunnel on trycloudflare.com...
+[2025-06-24T16:18:50.455Z] [STDERR] 2025-06-24T16:18:50Z INF +--------------------------------------------------------------------------------------------+
+2025-06-24T16:18:50Z INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
+[2025-06-24T16:18:50.456Z] [STDERR] 2025-06-24T16:18:50Z INF |  https://pavilion-seconds-ambassador-borders.trycloudflare.com                             |
+2025-06-24T16:18:50Z INF +--------------------------------------------------------------------------------------------+
+[2025-06-24T16:18:50.458Z] [STDERR] 2025-06-24T16:18:50Z INF Version 2025.6.0 (Checksum 173276e3370f366493fb818ebe33cca23a9601d721ca3c03085b3f838eaf3ca9)
+2025-06-24T16:18:50Z INF GOOS: linux, GOVersion: go1.24.2, GoArch: amd64
+[2025-06-24T16:18:50.462Z] [STDERR] 2025-06-24T16:18:50Z INF Settings: map[cred-file:/home/rodrigod/.cloudflared/7f599f12-2c04-4b97-ac8c-cdce94e225f4.json credentials-file:/home/rodrigod/.cloudflared/7f599f12-2c04-4b97-ac8c-cdce94e225f4.json ha-connections:1 protocol:quic url:http://localhost:3001]
+2025-06-24T16:18:50Z INF cloudflared will not automatically update if installed by a package manager.
+[2025-06-24T16:18:50.473Z] [STDERR] 2025-06-24T16:18:50Z INF Generated Connector ID: 87f2323b-6d6c-49a4-a24a-e45c00d0d56d
+[2025-06-24T16:18:50.485Z] [STDERR] 2025-06-24T16:18:50Z INF Initial protocol quic
+[2025-06-24T16:18:50.489Z] [STDERR] 2025-06-24T16:18:50Z INF ICMP proxy will use 192.168.1.11 as source for IPv4
+[2025-06-24T16:18:50.491Z] [STDERR] 2025-06-24T16:18:50Z INF ICMP proxy will use 2803:c180:2601:17b:aee0:10ff:fec2:d5a4 in zone wlp2s0 as source for IPv6
+[2025-06-24T16:18:50.493Z] [STDERR] 2025-06-24T16:18:50Z WRN The user running cloudflared process has a GID (group ID) that is not within ping_group_range. You might need to add that user to a group within that range, or instead update the range to encompass a group the user is already in by modifying /proc/sys/net/ipv4/ping_group_range. Otherwise cloudflared will not be able to ping this network error="Group ID 1000 is not between ping group 1 to 0"
+2025-06-24T16:18:50Z WRN ICMP proxy feature is disabled error="cannot create ICMPv4 proxy: Group ID 1000 is not between ping group 1 to 0 nor ICMPv6 proxy: socket: permission denied"
+[2025-06-24T16:18:50.558Z] [STDERR] 2025-06-24T16:18:50Z INF ICMP proxy will use 192.168.1.11 as source for IPv4
+[2025-06-24T16:18:50.559Z] [STDERR] 2025-06-24T16:18:50Z INF ICMP proxy will use 2803:c180:2601:17b:aee0:10ff:fec2:d5a4 in zone wlp2s0 as source for IPv6
+[2025-06-24T16:18:50.560Z] [STDERR] 2025-06-24T16:18:50Z INF Starting metrics server on 127.0.0.1:20242/metrics
+[2025-06-24T16:18:50.600Z] [STDERR] 2025-06-24T16:18:50Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=0 event=0 ip=198.41.200.63
+[2025-06-24T16:18:50.601Z] [STDERR] 2025/06/24 16:18:50 failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 7168 kiB, got: 416 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+[2025-06-24T16:18:50.834Z] [STDERR] 2025-06-24T16:18:50Z INF Registered tunnel connection connIndex=0 connection=20e46a1a-d54c-4177-a93a-5a13a7e89d5a event=0 ip=198.41.200.63 location=scl03 protocol=quic
+[2025-06-24T16:20:01.423Z] [SIGNAL] Recibida señal SIGINT. Cerrando túnel...
+[2025-06-24T16:20:02.588Z] [STDERR] 2025-06-24T16:20:02Z INF Thank you for trying Cloudflare Tunnel. Doing so, without a Cloudflare account, is a quick way to experiment and try it out. However, be aware that these account-less Tunnels have no uptime guarantee, are subject to the Cloudflare Online Services Terms of Use (https://www.cloudflare.com/website-terms/), and Cloudflare reserves the right to investigate your use of Tunnels for violations of such terms. If you intend to use Tunnels in production you should use a pre-created named tunnel by following: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps
+2025-06-24T16:20:02Z INF Requesting new quick Tunnel on trycloudflare.com...
+[2025-06-24T16:20:09.116Z] [STDERR] 2025-06-24T16:20:09Z INF +--------------------------------------------------------------------------------------------+
+[2025-06-24T16:20:09.119Z] [STDERR] 2025-06-24T16:20:09Z INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
+2025-06-24T16:20:09Z INF |  https://soap-administration-bars-down.trycloudflare.com                                   |
+2025-06-24T16:20:09Z INF +--------------------------------------------------------------------------------------------+
+[2025-06-24T16:20:09.119Z] [TUNNEL-URL] https://soap-administration-bars-down.trycloudflare.com
+[2025-06-24T16:20:09.125Z] [STDERR] 2025-06-24T16:20:09Z INF Version 2025.6.0 (Checksum 173276e3370f366493fb818ebe33cca23a9601d721ca3c03085b3f838eaf3ca9)
+2025-06-24T16:20:09Z INF GOOS: linux, GOVersion: go1.24.2, GoArch: amd64
+2025-06-24T16:20:09Z INF Settings: map[cred-file:/home/rodrigod/.cloudflared/7f599f12-2c04-4b97-ac8c-cdce94e225f4.json credentials-file:/home/rodrigod/.cloudflared/7f599f12-2c04-4b97-ac8c-cdce94e225f4.json ha-connections:1 protocol:quic url:http://localhost:3001]
+[2025-06-24T16:20:09.127Z] [STDERR] 2025-06-24T16:20:09Z INF cloudflared will not automatically update if installed by a package manager.
+[2025-06-24T16:20:09.136Z] [STDERR] 2025-06-24T16:20:09Z INF Generated Connector ID: e437da0e-4f04-480b-9ddc-3a3fc855b6db
+[2025-06-24T16:20:09.147Z] [STDERR] 2025-06-24T16:20:09Z INF Initial protocol quic
+[2025-06-24T16:20:09.154Z] [STDERR] 2025-06-24T16:20:09Z INF ICMP proxy will use 192.168.1.11 as source for IPv4
+2025-06-24T16:20:09Z INF ICMP proxy will use 2803:c180:2601:17b:aee0:10ff:fec2:d5a4 in zone wlp2s0 as source for IPv6
+2025-06-24T16:20:09Z WRN The user running cloudflared process has a GID (group ID) that is not within ping_group_range. You might need to add that user to a group within that range, or instead update the range to encompass a group the user is already in by modifying /proc/sys/net/ipv4/ping_group_range. Otherwise cloudflared will not be able to ping this network error="Group ID 1000 is not between ping group 1 to 0"
+2025-06-24T16:20:09Z WRN ICMP proxy feature is disabled error="cannot create ICMPv4 proxy: Group ID 1000 is not between ping group 1 to 0 nor ICMPv6 proxy: socket: permission denied"
+[2025-06-24T16:20:09.281Z] [STDERR] 2025-06-24T16:20:09Z INF ICMP proxy will use 192.168.1.11 as source for IPv4
+[2025-06-24T16:20:09.286Z] [STDERR] 2025-06-24T16:20:09Z INF ICMP proxy will use 2803:c180:2601:17b:aee0:10ff:fec2:d5a4 in zone wlp2s0 as source for IPv6
+2025-06-24T16:20:09Z INF Starting metrics server on 127.0.0.1:20242/metrics
+[2025-06-24T16:20:09.341Z] [STDERR] 2025-06-24T16:20:09Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=0 event=0 ip=198.41.192.7
+2025/06/24 16:20:09 failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 7168 kiB, got: 416 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+[2025-06-24T16:20:10.268Z] [STDERR] 2025-06-24T16:20:10Z INF Registered tunnel connection connIndex=0 connection=78e69b2d-1a33-4c02-b5ea-e272acf1f784 event=0 ip=198.41.192.7 location=scl05 protocol=quic
+[2025-06-24T16:25:24.285Z] [SIGNAL] Recibida señal SIGINT. Cerrando túnel...
+[2025-06-24T16:25:25.516Z] [STDERR] 2025-06-24T16:25:25Z INF Starting tunnel tunnelID=7f599f12-2c04-4b97-ac8c-cdce94e225f4
+2025-06-24T16:25:25Z INF Version 2025.6.0 (Checksum 173276e3370f366493fb818ebe33cca23a9601d721ca3c03085b3f838eaf3ca9)
+[2025-06-24T16:25:25.520Z] [STDERR] 2025-06-24T16:25:25Z INF GOOS: linux, GOVersion: go1.24.2, GoArch: amd64
+2025-06-24T16:25:25Z INF Settings: map[cred-file:/home/rodrigod/.cloudflared/7f599f12-2c04-4b97-ac8c-cdce94e225f4.json credentials-file:/home/rodrigod/.cloudflared/7f599f12-2c04-4b97-ac8c-cdce94e225f4.json]
+2025-06-24T16:25:25Z INF cloudflared will not automatically update if installed by a package manager.
+[2025-06-24T16:25:25.531Z] [STDERR] 2025-06-24T16:25:25Z INF Generated Connector ID: 79d790d7-25f6-4aec-9184-dd4cdcd3ea76
+[2025-06-24T16:25:25.542Z] [STDERR] 2025-06-24T16:25:25Z INF Initial protocol quic
+[2025-06-24T16:25:25.591Z] [STDERR] 2025-06-24T16:25:25Z INF ICMP proxy will use 192.168.1.11 as source for IPv4
+[2025-06-24T16:25:25.594Z] [STDERR] 2025-06-24T16:25:25Z INF ICMP proxy will use 2803:c180:2601:17b:aee0:10ff:fec2:d5a4 in zone wlp2s0 as source for IPv6
+2025-06-24T16:25:25Z WRN The user running cloudflared process has a GID (group ID) that is not within ping_group_range. You might need to add that user to a group within that range, or instead update the range to encompass a group the user is already in by modifying /proc/sys/net/ipv4/ping_group_range. Otherwise cloudflared will not be able to ping this network error="Group ID 1000 is not between ping group 1 to 0"
+2025-06-24T16:25:25Z WRN ICMP proxy feature is disabled error="cannot create ICMPv4 proxy: Group ID 1000 is not between ping group 1 to 0 nor ICMPv6 proxy: socket: permission denied"
+[2025-06-24T16:25:25.649Z] [STDERR] 2025-06-24T16:25:25Z INF ICMP proxy will use 192.168.1.11 as source for IPv4
+[2025-06-24T16:25:25.650Z] [STDERR] 2025-06-24T16:25:25Z INF ICMP proxy will use 2803:c180:2601:17b:aee0:10ff:fec2:d5a4 in zone wlp2s0 as source for IPv6
+2025-06-24T16:25:25Z INF Starting metrics server on 127.0.0.1:20242/metrics
+[2025-06-24T16:25:25.689Z] [STDERR] 2025-06-24T16:25:25Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=0 event=0 ip=198.41.192.57
+[2025-06-24T16:25:25.691Z] [STDERR] 2025/06/24 16:25:25 failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 7168 kiB, got: 416 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+[2025-06-24T16:25:25.969Z] [STDERR] 2025-06-24T16:25:25Z INF Registered tunnel connection connIndex=0 connection=f45faf68-6242-4c99-a2a6-52b16cdaf383 event=0 ip=198.41.192.57 location=scl05 protocol=quic
+[2025-06-24T16:25:25.970Z] [STDERR] 2025-06-24T16:25:25Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=1 event=0 ip=198.41.200.23
+[2025-06-24T16:25:26.663Z] [STDERR] 2025-06-24T16:25:26Z INF Registered tunnel connection connIndex=1 connection=a4fa26f9-9f63-4dea-8383-0278d5f770ad event=0 ip=198.41.200.23 location=scl03 protocol=quic
+[2025-06-24T16:25:26.973Z] [STDERR] 2025-06-24T16:25:26Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=2 event=0 ip=198.41.200.193
+[2025-06-24T16:25:27.228Z] [STDERR] 2025-06-24T16:25:27Z INF Registered tunnel connection connIndex=2 connection=cda7a44f-a808-42c9-8dd7-abe6449ff7a3 event=0 ip=198.41.200.193 location=scl03 protocol=quic
+[2025-06-24T16:25:27.973Z] [STDERR] 2025-06-24T16:25:27Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=3 event=0 ip=198.41.192.67
+[2025-06-24T16:25:28.922Z] [STDERR] 2025-06-24T16:25:28Z INF Registered tunnel connection connIndex=3 connection=dded8f59-3910-4cc2-9cd7-959b77b12608 event=0 ip=198.41.192.67 location=scl05 protocol=quic
+[2025-06-24T21:12:31.701Z] [STDERR] 2025-06-24T21:12:31Z WRN Failed to serve tunnel connection error="failed to accept QUIC stream: timeout: no recent network activity" connIndex=3 event=0 ip=198.41.192.67
+2025-06-24T21:12:31Z WRN Serve tunnel error error="failed to accept QUIC stream: timeout: no recent network activity" connIndex=3 event=0 ip=198.41.192.67
+2025-06-24T21:12:31Z INF Retrying connection in up to 1s connIndex=3 event=0 ip=198.41.192.67
+[2025-06-24T21:12:32.627Z] [STDERR] 2025-06-24T21:12:32Z WRN Connection terminated error="failed to accept QUIC stream: timeout: no recent network activity" connIndex=3
+[2025-06-24T21:12:34.431Z] [STDERR] 2025-06-24T21:12:34Z WRN Failed to serve tunnel connection error="timeout: no recent network activity" connIndex=0 event=0 ip=198.41.192.57
+[2025-06-24T21:12:34.433Z] [STDERR] 2025-06-24T21:12:34Z WRN Serve tunnel error error="timeout: no recent network activity" connIndex=0 event=0 ip=198.41.192.57
+2025-06-24T21:12:34Z INF Retrying connection in up to 1s connIndex=0 event=0 ip=198.41.192.57
+[2025-06-24T21:12:36.106Z] [STDERR] 2025-06-24T21:12:36Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=0 event=0 ip=198.41.192.37
+[2025-06-24T21:12:36.679Z] [STDERR] 2025-06-24T21:12:36Z INF Registered tunnel connection connIndex=0 connection=01424ad9-ab1b-49f4-9a9f-61b978bc4644 event=0 ip=198.41.192.37 location=mia02 protocol=quic
+[2025-06-24T21:12:45.899Z] [STDERR] 2025-06-24T21:12:45Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=3 event=0 ip=198.41.192.67
+[2025-06-24T21:12:46.374Z] [STDERR] 2025-06-24T21:12:46Z INF Registered tunnel connection connIndex=3 connection=4ab278c8-a437-4e39-88fa-9fcc11b366db event=0 ip=198.41.192.67 location=mia02 protocol=quic
+[2025-06-24T23:27:14.628Z] [SIGNAL] Recibida señal SIGINT. Cerrando túnel...
+[2025-06-24T23:28:01.045Z] [STDERR] 2025-06-24T23:28:01Z INF Starting tunnel tunnelID=7f599f12-2c04-4b97-ac8c-cdce94e225f4
+[2025-06-24T23:28:01.053Z] [STDERR] 2025-06-24T23:28:01Z INF Version 2025.6.0 (Checksum 173276e3370f366493fb818ebe33cca23a9601d721ca3c03085b3f838eaf3ca9)
+2025-06-24T23:28:01Z INF GOOS: linux, GOVersion: go1.24.2, GoArch: amd64
+2025-06-24T23:28:01Z INF Settings: map[cred-file:/home/rodrigod/.cloudflared/7f599f12-2c04-4b97-ac8c-cdce94e225f4.json credentials-file:/home/rodrigod/.cloudflared/7f599f12-2c04-4b97-ac8c-cdce94e225f4.json]
+[2025-06-24T23:28:01.064Z] [STDERR] 2025-06-24T23:28:01Z INF cloudflared will not automatically update if installed by a package manager.
+[2025-06-24T23:28:01.076Z] [STDERR] 2025-06-24T23:28:01Z INF Generated Connector ID: 1460534a-5452-4b87-8220-61dc1ce0e047
+[2025-06-24T23:28:01.089Z] [STDERR] 2025-06-24T23:28:01Z INF Initial protocol quic
+[2025-06-24T23:28:01.347Z] [STDERR] 2025-06-24T23:28:01Z INF ICMP proxy will use 192.168.1.11 as source for IPv4
+[2025-06-24T23:28:01.353Z] [STDERR] 2025-06-24T23:28:01Z INF ICMP proxy will use 2803:c180:2601:17b:aee0:10ff:fec2:d5a4 in zone wlp2s0 as source for IPv6
+[2025-06-24T23:28:01.365Z] [STDERR] 2025-06-24T23:28:01Z WRN The user running cloudflared process has a GID (group ID) that is not within ping_group_range. You might need to add that user to a group within that range, or instead update the range to encompass a group the user is already in by modifying /proc/sys/net/ipv4/ping_group_range. Otherwise cloudflared will not be able to ping this network error="Group ID 1000 is not between ping group 1 to 0"
+2025-06-24T23:28:01Z WRN ICMP proxy feature is disabled error="cannot create ICMPv4 proxy: Group ID 1000 is not between ping group 1 to 0 nor ICMPv6 proxy: socket: permission denied"
+[2025-06-24T23:28:01.461Z] [STDERR] 2025-06-24T23:28:01Z INF ICMP proxy will use 192.168.1.11 as source for IPv4
+[2025-06-24T23:28:01.468Z] [STDERR] 2025-06-24T23:28:01Z INF ICMP proxy will use 2803:c180:2601:17b:aee0:10ff:fec2:d5a4 in zone wlp2s0 as source for IPv6
+2025-06-24T23:28:01Z INF Starting metrics server on 127.0.0.1:20241/metrics
+[2025-06-24T23:28:01.519Z] [STDERR] 2025-06-24T23:28:01Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=0 event=0 ip=198.41.192.57
+2025/06/24 23:28:01 failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 7168 kiB, got: 416 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+[2025-06-24T23:28:02.141Z] [STDERR] 2025-06-24T23:28:02Z INF Registered tunnel connection connIndex=0 connection=28e5b824-f2fc-4e2c-b51d-27476a316bae event=0 ip=198.41.192.57 location=scl05 protocol=quic
+[2025-06-24T23:28:02.146Z] [STDERR] 2025-06-24T23:28:02Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=1 event=0 ip=198.41.200.43
+[2025-06-24T23:28:02.382Z] [STDERR] 2025-06-24T23:28:02Z INF Registered tunnel connection connIndex=1 connection=120ab866-5e09-4837-bb58-c5a926e017a2 event=0 ip=198.41.200.43 location=scl03 protocol=quic
+[2025-06-24T23:28:03.145Z] [STDERR] 2025-06-24T23:28:03Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=2 event=0 ip=198.41.200.33
+[2025-06-24T23:28:03.776Z] [STDERR] 2025-06-24T23:28:03Z INF Registered tunnel connection connIndex=2 connection=a2ffd7d4-13b6-4ec8-85d5-a9304f182061 event=0 ip=198.41.200.33 location=scl03 protocol=quic
+[2025-06-24T23:28:04.145Z] [STDERR] 2025-06-24T23:28:04Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=3 event=0 ip=198.41.192.47
+[2025-06-24T23:28:04.271Z] [STDERR] 2025-06-24T23:28:04Z INF Registered tunnel connection connIndex=3 connection=85b7a6fe-48d8-42c7-8abe-481733fd7db2 event=0 ip=198.41.192.47 location=scl05 protocol=quic
+[2025-06-25T19:50:25.188Z] [SIGNAL] Recibida señal SIGINT. Cerrando túnel...
+[2025-06-25T19:51:10.932Z] [STDERR] 2025-06-25T19:51:10Z INF Starting tunnel tunnelID=7f599f12-2c04-4b97-ac8c-cdce94e225f4
+2025-06-25T19:51:10Z INF Version 2025.6.0 (Checksum 173276e3370f366493fb818ebe33cca23a9601d721ca3c03085b3f838eaf3ca9)
+2025-06-25T19:51:10Z INF GOOS: linux, GOVersion: go1.24.2, GoArch: amd64
+2025-06-25T19:51:10Z INF Settings: map[cred-file:/home/rodrigod/.cloudflared/7f599f12-2c04-4b97-ac8c-cdce94e225f4.json credentials-file:/home/rodrigod/.cloudflared/7f599f12-2c04-4b97-ac8c-cdce94e225f4.json]
+[2025-06-25T19:51:10.951Z] [STDERR] 2025-06-25T19:51:10Z INF cloudflared will not automatically update if installed by a package manager.
+[2025-06-25T19:51:10.963Z] [STDERR] 2025-06-25T19:51:10Z INF Generated Connector ID: b432f250-2ccc-459a-ad00-547a30d2e847
+[2025-06-25T19:51:10.978Z] [STDERR] 2025-06-25T19:51:10Z INF Initial protocol quic
+[2025-06-25T19:51:11.096Z] [STDERR] 2025-06-25T19:51:11Z INF ICMP proxy will use 192.168.1.11 as source for IPv4
+[2025-06-25T19:51:11.099Z] [STDERR] 2025-06-25T19:51:11Z INF ICMP proxy will use 2803:c180:2601:17b:aee0:10ff:fec2:d5a4 in zone wlp2s0 as source for IPv6
+2025-06-25T19:51:11Z WRN The user running cloudflared process has a GID (group ID) that is not within ping_group_range. You might need to add that user to a group within that range, or instead update the range to encompass a group the user is already in by modifying /proc/sys/net/ipv4/ping_group_range. Otherwise cloudflared will not be able to ping this network error="Group ID 1000 is not between ping group 1 to 0"
+2025-06-25T19:51:11Z WRN ICMP proxy feature is disabled error="cannot create ICMPv4 proxy: Group ID 1000 is not between ping group 1 to 0 nor ICMPv6 proxy: socket: permission denied"
+[2025-06-25T19:51:11.209Z] [STDERR] 2025-06-25T19:51:11Z INF ICMP proxy will use 192.168.1.11 as source for IPv4
+[2025-06-25T19:51:11.215Z] [STDERR] 2025-06-25T19:51:11Z INF ICMP proxy will use 2803:c180:2601:17b:aee0:10ff:fec2:d5a4 in zone wlp2s0 as source for IPv6
+[2025-06-25T19:51:11.220Z] [STDERR] 2025-06-25T19:51:11Z INF Starting metrics server on 127.0.0.1:20241/metrics
+[2025-06-25T19:51:11.380Z] [STDERR] 2025-06-25T19:51:11Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=0 event=0 ip=198.41.200.63
+[2025-06-25T19:51:11.384Z] [STDERR] 2025/06/25 19:51:11 failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 7168 kiB, got: 416 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+[2025-06-25T19:51:11.673Z] [STDERR] 2025-06-25T19:51:11Z INF Registered tunnel connection connIndex=0 connection=37c26528-95c0-4d20-8b31-65a98daea7b4 event=0 ip=198.41.200.63 location=scl03 protocol=quic
+2025-06-25T19:51:11Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=1 event=0 ip=198.41.192.167
+[2025-06-25T19:51:12.481Z] [STDERR] 2025-06-25T19:51:12Z INF Registered tunnel connection connIndex=1 connection=48e81a67-2522-4934-af52-16dfaf587442 event=0 ip=198.41.192.167 location=scl05 protocol=quic
+[2025-06-25T19:51:12.674Z] [STDERR] 2025-06-25T19:51:12Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=2 event=0 ip=198.41.192.27
+[2025-06-25T19:51:13.326Z] [STDERR] 2025-06-25T19:51:13Z INF Registered tunnel connection connIndex=2 connection=12933fa5-8164-4408-a533-033f84347934 event=0 ip=198.41.192.27 location=scl05 protocol=quic
+[2025-06-25T19:51:13.674Z] [STDERR] 2025-06-25T19:51:13Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=3 event=0 ip=198.41.200.233
+[2025-06-25T19:51:14.228Z] [STDERR] 2025-06-25T19:51:14Z INF Registered tunnel connection connIndex=3 connection=f7e6934f-ce2c-44d3-a1fb-8dacd55273b8 event=0 ip=198.41.200.233 location=scl03 protocol=quic
+[2025-06-26T10:27:04.858Z] [STDERR] 2025-06-26T10:27:04Z WRN Failed to serve tunnel connection error="failed to accept QUIC stream: timeout: no recent network activity" connIndex=2 event=0 ip=198.41.192.27
+2025-06-26T10:27:04Z WRN Serve tunnel error error="failed to accept QUIC stream: timeout: no recent network activity" connIndex=2 event=0 ip=198.41.192.27
+2025-06-26T10:27:04Z INF Retrying connection in up to 1s connIndex=2 event=0 ip=198.41.192.27
+[2025-06-26T10:27:05.655Z] [STDERR] 2025-06-26T10:27:05Z WRN Connection terminated error="failed to accept QUIC stream: timeout: no recent network activity" connIndex=2
+[2025-06-26T10:27:19.235Z] [STDERR] 2025-06-26T10:27:19Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(25497) CurveP256] connIndex=2 event=0 ip=198.41.192.27
+[2025-06-26T10:27:19.523Z] [STDERR] 2025-06-26T10:27:19Z INF Registered tunnel connection connIndex=2 connection=651090b5-3e53-4697-ab8c-a235555e7cfc event=0 ip=198.41.192.27 location=scl05 protocol=quic
+[2025-06-26T19:51:11.574Z] [STDERR] 2025-06-26T19:51:11Z WRN Your version 2025.6.0 is outdated. We recommend upgrading it to 2025.6.1
+[2025-06-26T22:08:58.712Z] [SIGNAL] Recibida señal SIGINT. Cerrando túnel...

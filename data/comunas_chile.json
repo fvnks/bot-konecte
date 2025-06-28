@@ -1,0 +1,2084 @@
+[
+  {
+    "conara": "01",
+    "sii": "01101",
+    "nombre_comuna": "ARICA",
+    "codigo_tesoreria": "001"
+  },
+  {
+    "conara": "01",
+    "sii": "01106",
+    "nombre_comuna": "CAMARONES",
+    "codigo_tesoreria": "295"
+  },
+  {
+    "conara": "01",
+    "sii": "01201",
+    "nombre_comuna": "IQUIQUE",
+    "codigo_tesoreria": "002"
+  },
+  {
+    "conara": "01",
+    "sii": "01203",
+    "nombre_comuna": "PICA",
+    "codigo_tesoreria": "004"
+  },
+  {
+    "conara": "01",
+    "sii": "01204",
+    "nombre_comuna": "POZO ALMONTE",
+    "codigo_tesoreria": "005"
+  },
+  {
+    "conara": "01",
+    "sii": "01206",
+    "nombre_comuna": "HUARA",
+    "codigo_tesoreria": "003"
+  },
+  {
+    "conara": "01",
+    "sii": "01208",
+    "nombre_comuna": "CAMINA",
+    "codigo_tesoreria": "296"
+  },
+  {
+    "conara": "01",
+    "sii": "01210",
+    "nombre_comuna": "COLCHANE",
+    "codigo_tesoreria": "297"
+  },
+  {
+    "conara": "01",
+    "sii": "01211",
+    "nombre_comuna": "ALTO HOSPICIO",
+    "codigo_tesoreria": "347"
+  },
+  {
+    "conara": "01",
+    "sii": "01301",
+    "nombre_comuna": "PUTRE",
+    "codigo_tesoreria": "294"
+  },
+  {
+    "conara": "01",
+    "sii": "01302",
+    "nombre_comuna": "GENERAL LAGOS",
+    "codigo_tesoreria": "293"
+  },
+  {
+    "conara": "02",
+    "sii": "02101",
+    "nombre_comuna": "TOCOPILLA",
+    "codigo_tesoreria": "006"
+  },
+  {
+    "conara": "02",
+    "sii": "02103",
+    "nombre_comuna": "MARIA ELENA",
+    "codigo_tesoreria": "298"
+  },
+  {
+    "conara": "02",
+    "sii": "02201",
+    "nombre_comuna": "ANTOFAGASTA",
+    "codigo_tesoreria": "007"
+  },
+  {
+    "conara": "02",
+    "sii": "02202",
+    "nombre_comuna": "TALTAL",
+    "codigo_tesoreria": "009"
+  },
+  {
+    "conara": "02",
+    "sii": "02203",
+    "nombre_comuna": "MEJILLONES",
+    "codigo_tesoreria": "008"
+  },
+  {
+    "conara": "02",
+    "sii": "02206",
+    "nombre_comuna": "SIERRA GORDA",
+    "codigo_tesoreria": "299"
+  },
+  {
+    "conara": "02",
+    "sii": "02301",
+    "nombre_comuna": "CALAMA",
+    "codigo_tesoreria": "010"
+  },
+  {
+    "conara": "02",
+    "sii": "02302",
+    "nombre_comuna": "OLLAGUE",
+    "codigo_tesoreria": "300"
+  },
+  {
+    "conara": "02",
+    "sii": "02303",
+    "nombre_comuna": "SAN PEDRO DE ATACAMA",
+    "codigo_tesoreria": "301"
+  },
+  {
+    "conara": "03",
+    "sii": "03101",
+    "nombre_comuna": "CHANARAL",
+    "codigo_tesoreria": "011"
+  },
+  {
+    "conara": "03",
+    "sii": "03102",
+    "nombre_comuna": "DIEGO DE ALMAGRO",
+    "codigo_tesoreria": "012"
+  },
+  {
+    "conara": "03",
+    "sii": "03201",
+    "nombre_comuna": "COPIAPO",
+    "codigo_tesoreria": "013"
+  },
+  {
+    "conara": "03",
+    "sii": "03202",
+    "nombre_comuna": "CALDERA",
+    "codigo_tesoreria": "014"
+  },
+  {
+    "conara": "03",
+    "sii": "03203",
+    "nombre_comuna": "TIERRA AMARILLA",
+    "codigo_tesoreria": "015"
+  },
+  {
+    "conara": "03",
+    "sii": "03301",
+    "nombre_comuna": "VALLENAR",
+    "codigo_tesoreria": "016"
+  },
+  {
+    "conara": "03",
+    "sii": "03302",
+    "nombre_comuna": "FREIRINA",
+    "codigo_tesoreria": "017"
+  },
+  {
+    "conara": "03",
+    "sii": "03303",
+    "nombre_comuna": "HUASCO",
+    "codigo_tesoreria": "018"
+  },
+  {
+    "conara": "03",
+    "sii": "03304",
+    "nombre_comuna": "ALTO DEL CARMEN",
+    "codigo_tesoreria": "302"
+  },
+  {
+    "conara": "04",
+    "sii": "04101",
+    "nombre_comuna": "LA SERENA",
+    "codigo_tesoreria": "019"
+  },
+  {
+    "conara": "04",
+    "sii": "04102",
+    "nombre_comuna": "LA HIGUERA",
+    "codigo_tesoreria": "020"
+  },
+  {
+    "conara": "04",
+    "sii": "04103",
+    "nombre_comuna": "COQUIMBO",
+    "codigo_tesoreria": "021"
+  },
+  {
+    "conara": "04",
+    "sii": "04104",
+    "nombre_comuna": "ANDACOLLO",
+    "codigo_tesoreria": "022"
+  },
+  {
+    "conara": "04",
+    "sii": "04105",
+    "nombre_comuna": "VICUNA",
+    "codigo_tesoreria": "023"
+  },
+  {
+    "conara": "04",
+    "sii": "04106",
+    "nombre_comuna": "PAIHUANO",
+    "codigo_tesoreria": "024"
+  },
+  {
+    "conara": "04",
+    "sii": "04201",
+    "nombre_comuna": "OVALLE",
+    "codigo_tesoreria": "025"
+  },
+  {
+    "conara": "04",
+    "sii": "04203",
+    "nombre_comuna": "MONTE PATRIA",
+    "codigo_tesoreria": "026"
+  },
+  {
+    "conara": "04",
+    "sii": "04204",
+    "nombre_comuna": "PUNITAQUI",
+    "codigo_tesoreria": "027"
+  },
+  {
+    "conara": "04",
+    "sii": "04205",
+    "nombre_comuna": "COMBARBALA",
+    "codigo_tesoreria": "029"
+  },
+  {
+    "conara": "04",
+    "sii": "04206",
+    "nombre_comuna": "RIO HURTADO",
+    "codigo_tesoreria": "028"
+  },
+  {
+    "conara": "04",
+    "sii": "04301",
+    "nombre_comuna": "ILLAPEL",
+    "codigo_tesoreria": "030"
+  },
+  {
+    "conara": "04",
+    "sii": "04302",
+    "nombre_comuna": "SALAMANCA",
+    "codigo_tesoreria": "032"
+  },
+  {
+    "conara": "04",
+    "sii": "04303",
+    "nombre_comuna": "LOS VILOS",
+    "codigo_tesoreria": "033"
+  },
+  {
+    "conara": "04",
+    "sii": "04304",
+    "nombre_comuna": "CANELA",
+    "codigo_tesoreria": "031"
+  },
+  {
+    "conara": "05",
+    "sii": "05101",
+    "nombre_comuna": "ISLA DE PASCUA",
+    "codigo_tesoreria": "041"
+  },
+  {
+    "conara": "05",
+    "sii": "05201",
+    "nombre_comuna": "LA LIGUA",
+    "codigo_tesoreria": "059"
+  },
+  {
+    "conara": "05",
+    "sii": "05202",
+    "nombre_comuna": "PETORCA",
+    "codigo_tesoreria": "055"
+  },
+  {
+    "conara": "05",
+    "sii": "05203",
+    "nombre_comuna": "CABILDO",
+    "codigo_tesoreria": "056"
+  },
+  {
+    "conara": "05",
+    "sii": "05204",
+    "nombre_comuna": "ZAPALLAR",
+    "codigo_tesoreria": "058"
+  },
+  {
+    "conara": "05",
+    "sii": "05205",
+    "nombre_comuna": "PAPUDO",
+    "codigo_tesoreria": "057"
+  },
+  {
+    "conara": "05",
+    "sii": "05301",
+    "nombre_comuna": "VALPARAISO",
+    "codigo_tesoreria": "034"
+  },
+  {
+    "conara": "05",
+    "sii": "05302",
+    "nombre_comuna": "VINA DEL MAR",
+    "codigo_tesoreria": "037"
+  },
+  {
+    "conara": "05",
+    "sii": "05303",
+    "nombre_comuna": "VILLA ALEMANA",
+    "codigo_tesoreria": "039"
+  },
+  {
+    "conara": "05",
+    "sii": "05304",
+    "nombre_comuna": "QUILPUE",
+    "codigo_tesoreria": "038"
+  },
+  {
+    "conara": "05",
+    "sii": "05305",
+    "nombre_comuna": "CASABLANCA",
+    "codigo_tesoreria": "040"
+  },
+  {
+    "conara": "05",
+    "sii": "05306",
+    "nombre_comuna": "QUINTERO",
+    "codigo_tesoreria": "035"
+  },
+  {
+    "conara": "05",
+    "sii": "05307",
+    "nombre_comuna": "PUCHUNCAVI",
+    "codigo_tesoreria": "036"
+  },
+  {
+    "conara": "05",
+    "sii": "05308",
+    "nombre_comuna": "JUAN FERNANDEZ",
+    "codigo_tesoreria": "321"
+  },
+  {
+    "conara": "05",
+    "sii": "05309",
+    "nombre_comuna": "CONCON",
+    "codigo_tesoreria": "340"
+  },
+  {
+    "conara": "05",
+    "sii": "05401",
+    "nombre_comuna": "SAN ANTONIO",
+    "codigo_tesoreria": "042"
+  },
+  {
+    "conara": "05",
+    "sii": "05402",
+    "nombre_comuna": "SANTO DOMINGO",
+    "codigo_tesoreria": "043"
+  },
+  {
+    "conara": "05",
+    "sii": "05403",
+    "nombre_comuna": "CARTAGENA",
+    "codigo_tesoreria": "046"
+  },
+  {
+    "conara": "05",
+    "sii": "05404",
+    "nombre_comuna": "EL TABO",
+    "codigo_tesoreria": "047"
+  },
+  {
+    "conara": "05",
+    "sii": "05405",
+    "nombre_comuna": "EL QUISCO",
+    "codigo_tesoreria": "045"
+  },
+  {
+    "conara": "05",
+    "sii": "05406",
+    "nombre_comuna": "ALGARROBO",
+    "codigo_tesoreria": "044"
+  },
+  {
+    "conara": "05",
+    "sii": "05501",
+    "nombre_comuna": "QUILLOTA",
+    "codigo_tesoreria": "048"
+  },
+  {
+    "conara": "05",
+    "sii": "05502",
+    "nombre_comuna": "NOGALES",
+    "codigo_tesoreria": "052"
+  },
+  {
+    "conara": "05",
+    "sii": "05503",
+    "nombre_comuna": "HIJUELAS",
+    "codigo_tesoreria": "051"
+  },
+  {
+    "conara": "05",
+    "sii": "05504",
+    "nombre_comuna": "LA CALERA",
+    "codigo_tesoreria": "050"
+  },
+  {
+    "conara": "05",
+    "sii": "05505",
+    "nombre_comuna": "LA CRUZ",
+    "codigo_tesoreria": "049"
+  },
+  {
+    "conara": "05",
+    "sii": "05506",
+    "nombre_comuna": "LIMACHE",
+    "codigo_tesoreria": "053"
+  },
+  {
+    "conara": "05",
+    "sii": "05507",
+    "nombre_comuna": "OLMUE",
+    "codigo_tesoreria": "054"
+  },
+  {
+    "conara": "05",
+    "sii": "05601",
+    "nombre_comuna": "SAN FELIPE",
+    "codigo_tesoreria": "060"
+  },
+  {
+    "conara": "05",
+    "sii": "05602",
+    "nombre_comuna": "PANQUEHUE",
+    "codigo_tesoreria": "062"
+  },
+  {
+    "conara": "05",
+    "sii": "05603",
+    "nombre_comuna": "CATEMU",
+    "codigo_tesoreria": "063"
+  },
+  {
+    "conara": "05",
+    "sii": "05604",
+    "nombre_comuna": "PUTAENDO",
+    "codigo_tesoreria": "061"
+  },
+  {
+    "conara": "05",
+    "sii": "05605",
+    "nombre_comuna": "SANTA MARIA",
+    "codigo_tesoreria": "064"
+  },
+  {
+    "conara": "05",
+    "sii": "05606",
+    "nombre_comuna": "LLAY-LLAY",
+    "codigo_tesoreria": "065"
+  },
+  {
+    "conara": "05",
+    "sii": "05701",
+    "nombre_comuna": "LOS ANDES",
+    "codigo_tesoreria": "066"
+  },
+  {
+    "conara": "05",
+    "sii": "05702",
+    "nombre_comuna": "CALLE LARGA",
+    "codigo_tesoreria": "067"
+  },
+  {
+    "conara": "05",
+    "sii": "05703",
+    "nombre_comuna": "SAN ESTEBAN",
+    "codigo_tesoreria": "069"
+  },
+  {
+    "conara": "05",
+    "sii": "05704",
+    "nombre_comuna": "RINCONADA",
+    "codigo_tesoreria": "068"
+  },
+  {
+    "conara": "06",
+    "sii": "06101",
+    "nombre_comuna": "RANCAGUA",
+    "codigo_tesoreria": "105"
+  },
+  {
+    "conara": "06",
+    "sii": "06102",
+    "nombre_comuna": "MACHALI",
+    "codigo_tesoreria": "106"
+  },
+  {
+    "conara": "06",
+    "sii": "06103",
+    "nombre_comuna": "GRANEROS",
+    "codigo_tesoreria": "107"
+  },
+  {
+    "conara": "06",
+    "sii": "06104",
+    "nombre_comuna": "SAN FRANCISCO DE MOSTAZAL",
+    "codigo_tesoreria": "111"
+  },
+  {
+    "conara": "06",
+    "sii": "06105",
+    "nombre_comuna": "DONIHUE",
+    "codigo_tesoreria": "112"
+  },
+  {
+    "conara": "06",
+    "sii": "06106",
+    "nombre_comuna": "COLTAUCO",
+    "codigo_tesoreria": "113"
+  },
+  {
+    "conara": "06",
+    "sii": "06107",
+    "nombre_comuna": "CODEGUA",
+    "codigo_tesoreria": "110"
+  },
+  {
+    "conara": "06",
+    "sii": "06108",
+    "nombre_comuna": "PEUMO",
+    "codigo_tesoreria": "115"
+  },
+  {
+    "conara": "06",
+    "sii": "06109",
+    "nombre_comuna": "LAS CABRAS",
+    "codigo_tesoreria": "116"
+  },
+  {
+    "conara": "06",
+    "sii": "06110",
+    "nombre_comuna": "SAN VICENTE",
+    "codigo_tesoreria": "117"
+  },
+  {
+    "conara": "06",
+    "sii": "06111",
+    "nombre_comuna": "PICHIDEGUA",
+    "codigo_tesoreria": "118"
+  },
+  {
+    "conara": "06",
+    "sii": "06112",
+    "nombre_comuna": "RENGO",
+    "codigo_tesoreria": "121"
+  },
+  {
+    "conara": "06",
+    "sii": "06113",
+    "nombre_comuna": "REQUINOA",
+    "codigo_tesoreria": "119"
+  },
+  {
+    "conara": "06",
+    "sii": "06114",
+    "nombre_comuna": "OLIVAR",
+    "codigo_tesoreria": "120"
+  },
+  {
+    "conara": "06",
+    "sii": "06115",
+    "nombre_comuna": "MALLOA",
+    "codigo_tesoreria": "122"
+  },
+  {
+    "conara": "06",
+    "sii": "06116",
+    "nombre_comuna": "COINCO",
+    "codigo_tesoreria": "114"
+  },
+  {
+    "conara": "06",
+    "sii": "06117",
+    "nombre_comuna": "QUINTA DE TILCOCO",
+    "codigo_tesoreria": "123"
+  },
+  {
+    "conara": "06",
+    "sii": "06201",
+    "nombre_comuna": "SAN FERNANDO",
+    "codigo_tesoreria": "124"
+  },
+  {
+    "conara": "06",
+    "sii": "06202",
+    "nombre_comuna": "CHIMBARONGO",
+    "codigo_tesoreria": "125"
+  },
+  {
+    "conara": "06",
+    "sii": "06203",
+    "nombre_comuna": "NANCAGUA",
+    "codigo_tesoreria": "126"
+  },
+  {
+    "conara": "06",
+    "sii": "06204",
+    "nombre_comuna": "PLACILLA",
+    "codigo_tesoreria": "127"
+  },
+  {
+    "conara": "06",
+    "sii": "06205",
+    "nombre_comuna": "SANTA CRUZ",
+    "codigo_tesoreria": "128"
+  },
+  {
+    "conara": "06",
+    "sii": "06206",
+    "nombre_comuna": "LOLOL",
+    "codigo_tesoreria": "129"
+  },
+  {
+    "conara": "06",
+    "sii": "06207",
+    "nombre_comuna": "PALMILLA",
+    "codigo_tesoreria": "130"
+  },
+  {
+    "conara": "06",
+    "sii": "06208",
+    "nombre_comuna": "PERALILLO",
+    "codigo_tesoreria": "131"
+  },
+  {
+    "conara": "06",
+    "sii": "06209",
+    "nombre_comuna": "CHEPICA",
+    "codigo_tesoreria": "132"
+  },
+  {
+    "conara": "06",
+    "sii": "06214",
+    "nombre_comuna": "PUMANQUE",
+    "codigo_tesoreria": "135"
+  },
+  {
+    "conara": "06",
+    "sii": "06301",
+    "nombre_comuna": "PICHILEMU",
+    "codigo_tesoreria": "137"
+  },
+  {
+    "conara": "06",
+    "sii": "06302",
+    "nombre_comuna": "NAVIDAD",
+    "codigo_tesoreria": "138"
+  },
+  {
+    "conara": "06",
+    "sii": "06303",
+    "nombre_comuna": "LITUECHE",
+    "codigo_tesoreria": "136"
+  },
+  {
+    "conara": "06",
+    "sii": "06304",
+    "nombre_comuna": "LA ESTRELLA",
+    "codigo_tesoreria": "139"
+  },
+  {
+    "conara": "06",
+    "sii": "06305",
+    "nombre_comuna": "MARCHIGUE",
+    "codigo_tesoreria": "134"
+  },
+  {
+    "conara": "06",
+    "sii": "06306",
+    "nombre_comuna": "PAREDONES",
+    "codigo_tesoreria": "133"
+  },
+  {
+    "conara": "07",
+    "sii": "07101",
+    "nombre_comuna": "CURICO",
+    "codigo_tesoreria": "140"
+  },
+  {
+    "conara": "07",
+    "sii": "07102",
+    "nombre_comuna": "TENO",
+    "codigo_tesoreria": "142"
+  },
+  {
+    "conara": "07",
+    "sii": "07103",
+    "nombre_comuna": "ROMERAL",
+    "codigo_tesoreria": "141"
+  },
+  {
+    "conara": "07",
+    "sii": "07104",
+    "nombre_comuna": "RAUCO",
+    "codigo_tesoreria": "143"
+  },
+  {
+    "conara": "07",
+    "sii": "07105",
+    "nombre_comuna": "LICANTEN",
+    "codigo_tesoreria": "145"
+  },
+  {
+    "conara": "07",
+    "sii": "07106",
+    "nombre_comuna": "VICHUQUEN",
+    "codigo_tesoreria": "146"
+  },
+  {
+    "conara": "07",
+    "sii": "07107",
+    "nombre_comuna": "HUALANE",
+    "codigo_tesoreria": "144"
+  },
+  {
+    "conara": "07",
+    "sii": "07108",
+    "nombre_comuna": "MOLINA",
+    "codigo_tesoreria": "147"
+  },
+  {
+    "conara": "07",
+    "sii": "07109",
+    "nombre_comuna": "SAGRADA FAMILIA",
+    "codigo_tesoreria": "148"
+  },
+  {
+    "conara": "07",
+    "sii": "07201",
+    "nombre_comuna": "TALCA",
+    "codigo_tesoreria": "150"
+  },
+  {
+    "conara": "07",
+    "sii": "07202",
+    "nombre_comuna": "SAN CLEMENTE",
+    "codigo_tesoreria": "151"
+  },
+  {
+    "conara": "07",
+    "sii": "07203",
+    "nombre_comuna": "PELARCO",
+    "codigo_tesoreria": "152"
+  },
+  {
+    "conara": "07",
+    "sii": "07204",
+    "nombre_comuna": "RIO CLARO",
+    "codigo_tesoreria": "149"
+  },
+  {
+    "conara": "07",
+    "sii": "07205",
+    "nombre_comuna": "PENCAHUE",
+    "codigo_tesoreria": "153"
+  },
+  {
+    "conara": "07",
+    "sii": "07206",
+    "nombre_comuna": "MAULE",
+    "codigo_tesoreria": "154"
+  },
+  {
+    "conara": "07",
+    "sii": "07207",
+    "nombre_comuna": "CUREPTO",
+    "codigo_tesoreria": "155"
+  },
+  {
+    "conara": "07",
+    "sii": "07208",
+    "nombre_comuna": "CONSTITUCION",
+    "codigo_tesoreria": "157"
+  },
+  {
+    "conara": "07",
+    "sii": "07209",
+    "nombre_comuna": "EMPEDRADO",
+    "codigo_tesoreria": "158"
+  },
+  {
+    "conara": "07",
+    "sii": "07210",
+    "nombre_comuna": "SAN RAFAEL",
+    "codigo_tesoreria": "341"
+  },
+  {
+    "conara": "07",
+    "sii": "07301",
+    "nombre_comuna": "LINARES",
+    "codigo_tesoreria": "159"
+  },
+  {
+    "conara": "07",
+    "sii": "07302",
+    "nombre_comuna": "YERBAS BUENAS",
+    "codigo_tesoreria": "160"
+  },
+  {
+    "conara": "07",
+    "sii": "07303",
+    "nombre_comuna": "COLBUN",
+    "codigo_tesoreria": "161"
+  },
+  {
+    "conara": "07",
+    "sii": "07304",
+    "nombre_comuna": "LONGAVI",
+    "codigo_tesoreria": "162"
+  },
+  {
+    "conara": "07",
+    "sii": "07305",
+    "nombre_comuna": "PARRAL",
+    "codigo_tesoreria": "164"
+  },
+  {
+    "conara": "07",
+    "sii": "07306",
+    "nombre_comuna": "RETIRO",
+    "codigo_tesoreria": "165"
+  },
+  {
+    "conara": "07",
+    "sii": "07309",
+    "nombre_comuna": "VILLA ALEGRE",
+    "codigo_tesoreria": "163"
+  },
+  {
+    "conara": "07",
+    "sii": "07310",
+    "nombre_comuna": "SAN JAVIER",
+    "codigo_tesoreria": "156"
+  },
+  {
+    "conara": "07",
+    "sii": "07401",
+    "nombre_comuna": "CAUQUENES",
+    "codigo_tesoreria": "166"
+  },
+  {
+    "conara": "07",
+    "sii": "07402",
+    "nombre_comuna": "PELLUHUE",
+    "codigo_tesoreria": "320"
+  },
+  {
+    "conara": "07",
+    "sii": "07403",
+    "nombre_comuna": "CHANCO",
+    "codigo_tesoreria": "167"
+  },
+  {
+    "conara": "08",
+    "sii": "08101",
+    "nombre_comuna": "CHILLAN",
+    "codigo_tesoreria": "168"
+  },
+  {
+    "conara": "08",
+    "sii": "08102",
+    "nombre_comuna": "PINTO",
+    "codigo_tesoreria": "169"
+  },
+  {
+    "conara": "08",
+    "sii": "08103",
+    "nombre_comuna": "COIHUECO",
+    "codigo_tesoreria": "170"
+  },
+  {
+    "conara": "08",
+    "sii": "08104",
+    "nombre_comuna": "QUIRIHUE",
+    "codigo_tesoreria": "172"
+  },
+  {
+    "conara": "08",
+    "sii": "08105",
+    "nombre_comuna": "NINHUE",
+    "codigo_tesoreria": "174"
+  },
+  {
+    "conara": "08",
+    "sii": "08106",
+    "nombre_comuna": "PORTEZUELO",
+    "codigo_tesoreria": "171"
+  },
+  {
+    "conara": "08",
+    "sii": "08107",
+    "nombre_comuna": "COBQUECURA",
+    "codigo_tesoreria": "175"
+  },
+  {
+    "conara": "08",
+    "sii": "08108",
+    "nombre_comuna": "TREHUACO",
+    "codigo_tesoreria": "173"
+  },
+  {
+    "conara": "08",
+    "sii": "08109",
+    "nombre_comuna": "SAN CARLOS",
+    "codigo_tesoreria": "176"
+  },
+  {
+    "conara": "08",
+    "sii": "08110",
+    "nombre_comuna": "NIQUEN",
+    "codigo_tesoreria": "177"
+  },
+  {
+    "conara": "08",
+    "sii": "08111",
+    "nombre_comuna": "SAN FABIAN",
+    "codigo_tesoreria": "178"
+  },
+  {
+    "conara": "08",
+    "sii": "08112",
+    "nombre_comuna": "SAN NICOLAS",
+    "codigo_tesoreria": "179"
+  },
+  {
+    "conara": "08",
+    "sii": "08113",
+    "nombre_comuna": "BULNES",
+    "codigo_tesoreria": "180"
+  },
+  {
+    "conara": "08",
+    "sii": "08114",
+    "nombre_comuna": "SAN IGNACIO",
+    "codigo_tesoreria": "181"
+  },
+  {
+    "conara": "08",
+    "sii": "08115",
+    "nombre_comuna": "QUILLON",
+    "codigo_tesoreria": "182"
+  },
+  {
+    "conara": "08",
+    "sii": "08116",
+    "nombre_comuna": "YUNGAY",
+    "codigo_tesoreria": "183"
+  },
+  {
+    "conara": "08",
+    "sii": "08117",
+    "nombre_comuna": "PEMUCO",
+    "codigo_tesoreria": "184"
+  },
+  {
+    "conara": "08",
+    "sii": "08118",
+    "nombre_comuna": "EL CARMEN",
+    "codigo_tesoreria": "185"
+  },
+  {
+    "conara": "08",
+    "sii": "08119",
+    "nombre_comuna": "RANQUIL",
+    "codigo_tesoreria": "187"
+  },
+  {
+    "conara": "08",
+    "sii": "08120",
+    "nombre_comuna": "COELEMU",
+    "codigo_tesoreria": "186"
+  },
+  {
+    "conara": "08",
+    "sii": "08121",
+    "nombre_comuna": "CHILLAN VIEJO",
+    "codigo_tesoreria": "342"
+  },
+  {
+    "conara": "08",
+    "sii": "08201",
+    "nombre_comuna": "CONCEPCION",
+    "codigo_tesoreria": "188"
+  },
+  {
+    "conara": "08",
+    "sii": "08202",
+    "nombre_comuna": "PENCO",
+    "codigo_tesoreria": "191"
+  },
+  {
+    "conara": "08",
+    "sii": "08203",
+    "nombre_comuna": "HUALQUI",
+    "codigo_tesoreria": "192"
+  },
+  {
+    "conara": "08",
+    "sii": "08204",
+    "nombre_comuna": "FLORIDA",
+    "codigo_tesoreria": "193"
+  },
+  {
+    "conara": "08",
+    "sii": "08205",
+    "nombre_comuna": "TOME",
+    "codigo_tesoreria": "190"
+  },
+  {
+    "conara": "08",
+    "sii": "08206",
+    "nombre_comuna": "TALCAHUANO",
+    "codigo_tesoreria": "189"
+  },
+  {
+    "conara": "08",
+    "sii": "08207",
+    "nombre_comuna": "CORONEL",
+    "codigo_tesoreria": "194"
+  },
+  {
+    "conara": "08",
+    "sii": "08208",
+    "nombre_comuna": "LOTA",
+    "codigo_tesoreria": "195"
+  },
+  {
+    "conara": "08",
+    "sii": "08209",
+    "nombre_comuna": "SANTA JUANA",
+    "codigo_tesoreria": "196"
+  },
+  {
+    "conara": "08",
+    "sii": "08210",
+    "nombre_comuna": "SAN PEDRO DE LA PAZ",
+    "codigo_tesoreria": "343"
+  },
+  {
+    "conara": "08",
+    "sii": "08211",
+    "nombre_comuna": "CHIGUAYANTE",
+    "codigo_tesoreria": "344"
+  },
+  {
+    "conara": "08",
+    "sii": "08212",
+    "nombre_comuna": "HUALPEN",
+    "codigo_tesoreria": "346"
+  },
+  {
+    "conara": "08",
+    "sii": "08301",
+    "nombre_comuna": "ARAUCO",
+    "codigo_tesoreria": "198"
+  },
+  {
+    "conara": "08",
+    "sii": "08302",
+    "nombre_comuna": "CURANILAHUE",
+    "codigo_tesoreria": "197"
+  },
+  {
+    "conara": "08",
+    "sii": "08303",
+    "nombre_comuna": "LEBU",
+    "codigo_tesoreria": "199"
+  },
+  {
+    "conara": "08",
+    "sii": "08304",
+    "nombre_comuna": "LOS ALAMOS",
+    "codigo_tesoreria": "200"
+  },
+  {
+    "conara": "08",
+    "sii": "08305",
+    "nombre_comuna": "CANETE",
+    "codigo_tesoreria": "201"
+  },
+  {
+    "conara": "08",
+    "sii": "08306",
+    "nombre_comuna": "CONTULMO",
+    "codigo_tesoreria": "202"
+  },
+  {
+    "conara": "08",
+    "sii": "08307",
+    "nombre_comuna": "TIRUA",
+    "codigo_tesoreria": "203"
+  },
+  {
+    "conara": "08",
+    "sii": "08401",
+    "nombre_comuna": "LOS ANGELES",
+    "codigo_tesoreria": "204"
+  },
+  {
+    "conara": "08",
+    "sii": "08402",
+    "nombre_comuna": "SANTA BARBARA",
+    "codigo_tesoreria": "205"
+  },
+  {
+    "conara": "08",
+    "sii": "08403",
+    "nombre_comuna": "LAJA",
+    "codigo_tesoreria": "210"
+  },
+  {
+    "conara": "08",
+    "sii": "08404",
+    "nombre_comuna": "QUILLECO",
+    "codigo_tesoreria": "206"
+  },
+  {
+    "conara": "08",
+    "sii": "08405",
+    "nombre_comuna": "NACIMIENTO",
+    "codigo_tesoreria": "212"
+  },
+  {
+    "conara": "08",
+    "sii": "08406",
+    "nombre_comuna": "NEGRETE",
+    "codigo_tesoreria": "213"
+  },
+  {
+    "conara": "08",
+    "sii": "08407",
+    "nombre_comuna": "MULCHEN",
+    "codigo_tesoreria": "214"
+  },
+  {
+    "conara": "08",
+    "sii": "08408",
+    "nombre_comuna": "QUILACO",
+    "codigo_tesoreria": "215"
+  },
+  {
+    "conara": "08",
+    "sii": "08409",
+    "nombre_comuna": "YUMBEL",
+    "codigo_tesoreria": "207"
+  },
+  {
+    "conara": "08",
+    "sii": "08410",
+    "nombre_comuna": "CABRERO",
+    "codigo_tesoreria": "208"
+  },
+  {
+    "conara": "08",
+    "sii": "08411",
+    "nombre_comuna": "SAN ROSENDO",
+    "codigo_tesoreria": "211"
+  },
+  {
+    "conara": "08",
+    "sii": "08412",
+    "nombre_comuna": "TUCAPEL",
+    "codigo_tesoreria": "209"
+  },
+  {
+    "conara": "08",
+    "sii": "08413",
+    "nombre_comuna": "ANTUCO",
+    "codigo_tesoreria": "303"
+  },
+  {
+    "conara": "08",
+    "sii": "08414",
+    "nombre_comuna": "ALTO BIOBIO",
+    "codigo_tesoreria": "349"
+  },
+  {
+    "conara": "09",
+    "sii": "09101",
+    "nombre_comuna": "ANGOL",
+    "codigo_tesoreria": "216"
+  },
+  {
+    "conara": "09",
+    "sii": "09102",
+    "nombre_comuna": "PUREN",
+    "codigo_tesoreria": "217"
+  },
+  {
+    "conara": "09",
+    "sii": "09103",
+    "nombre_comuna": "LOS SAUCES",
+    "codigo_tesoreria": "218"
+  },
+  {
+    "conara": "09",
+    "sii": "09104",
+    "nombre_comuna": "RENAICO",
+    "codigo_tesoreria": "219"
+  },
+  {
+    "conara": "09",
+    "sii": "09105",
+    "nombre_comuna": "COLLIPULLI",
+    "codigo_tesoreria": "220"
+  },
+  {
+    "conara": "09",
+    "sii": "09106",
+    "nombre_comuna": "ERCILLA",
+    "codigo_tesoreria": "221"
+  },
+  {
+    "conara": "09",
+    "sii": "09107",
+    "nombre_comuna": "TRAIGUEN",
+    "codigo_tesoreria": "222"
+  },
+  {
+    "conara": "09",
+    "sii": "09108",
+    "nombre_comuna": "LUMACO",
+    "codigo_tesoreria": "223"
+  },
+  {
+    "conara": "09",
+    "sii": "09109",
+    "nombre_comuna": "VICTORIA",
+    "codigo_tesoreria": "224"
+  },
+  {
+    "conara": "09",
+    "sii": "09110",
+    "nombre_comuna": "CURACAUTIN",
+    "codigo_tesoreria": "225"
+  },
+  {
+    "conara": "09",
+    "sii": "09111",
+    "nombre_comuna": "LONQUIMAY",
+    "codigo_tesoreria": "226"
+  },
+  {
+    "conara": "09",
+    "sii": "09201",
+    "nombre_comuna": "TEMUCO",
+    "codigo_tesoreria": "227"
+  },
+  {
+    "conara": "09",
+    "sii": "09202",
+    "nombre_comuna": "VILCUN",
+    "codigo_tesoreria": "228"
+  },
+  {
+    "conara": "09",
+    "sii": "09203",
+    "nombre_comuna": "FREIRE",
+    "codigo_tesoreria": "229"
+  },
+  {
+    "conara": "09",
+    "sii": "09204",
+    "nombre_comuna": "CUNCO",
+    "codigo_tesoreria": "230"
+  },
+  {
+    "conara": "09",
+    "sii": "09205",
+    "nombre_comuna": "LAUTARO",
+    "codigo_tesoreria": "231"
+  },
+  {
+    "conara": "09",
+    "sii": "09206",
+    "nombre_comuna": "PERQUENCO",
+    "codigo_tesoreria": "233"
+  },
+  {
+    "conara": "09",
+    "sii": "09207",
+    "nombre_comuna": "GALVARINO",
+    "codigo_tesoreria": "232"
+  },
+  {
+    "conara": "09",
+    "sii": "09208",
+    "nombre_comuna": "NUEVA IMPERIAL",
+    "codigo_tesoreria": "234"
+  },
+  {
+    "conara": "09",
+    "sii": "09209",
+    "nombre_comuna": "CARAHUE",
+    "codigo_tesoreria": "235"
+  },
+  {
+    "conara": "09",
+    "sii": "09210",
+    "nombre_comuna": "SAAVEDRA",
+    "codigo_tesoreria": "236"
+  },
+  {
+    "conara": "09",
+    "sii": "09211",
+    "nombre_comuna": "PITRUFQUEN",
+    "codigo_tesoreria": "237"
+  },
+  {
+    "conara": "09",
+    "sii": "09212",
+    "nombre_comuna": "GORBEA",
+    "codigo_tesoreria": "238"
+  },
+  {
+    "conara": "09",
+    "sii": "09213",
+    "nombre_comuna": "TOLTEN",
+    "codigo_tesoreria": "239"
+  },
+  {
+    "conara": "09",
+    "sii": "09214",
+    "nombre_comuna": "LONCOCHE",
+    "codigo_tesoreria": "240"
+  },
+  {
+    "conara": "09",
+    "sii": "09215",
+    "nombre_comuna": "VILLARRICA",
+    "codigo_tesoreria": "241"
+  },
+  {
+    "conara": "09",
+    "sii": "09216",
+    "nombre_comuna": "PUCON",
+    "codigo_tesoreria": "242"
+  },
+  {
+    "conara": "09",
+    "sii": "09217",
+    "nombre_comuna": "MELIPEUCO",
+    "codigo_tesoreria": "304"
+  },
+  {
+    "conara": "09",
+    "sii": "09218",
+    "nombre_comuna": "CURARREHUE",
+    "codigo_tesoreria": "305"
+  },
+  {
+    "conara": "09",
+    "sii": "09219",
+    "nombre_comuna": "TEODORO SCHMIDT",
+    "codigo_tesoreria": "306"
+  },
+  {
+    "conara": "09",
+    "sii": "09220",
+    "nombre_comuna": "PADRE LAS CASAS",
+    "codigo_tesoreria": "345"
+  },
+  {
+    "conara": "09",
+    "sii": "09221",
+    "nombre_comuna": "CHOLCHOL",
+    "codigo_tesoreria": "348"
+  },
+  {
+    "conara": "10",
+    "sii": "10101",
+    "nombre_comuna": "VALDIVIA",
+    "codigo_tesoreria": "243"
+  },
+  {
+    "conara": "10",
+    "sii": "10102",
+    "nombre_comuna": "MARIQUINA",
+    "codigo_tesoreria": "245"
+  },
+  {
+    "conara": "10",
+    "sii": "10103",
+    "nombre_comuna": "LANCO",
+    "codigo_tesoreria": "249"
+  },
+  {
+    "conara": "10",
+    "sii": "10104",
+    "nombre_comuna": "LOS LAGOS",
+    "codigo_tesoreria": "247"
+  },
+  {
+    "conara": "10",
+    "sii": "10105",
+    "nombre_comuna": "FUTRONO",
+    "codigo_tesoreria": "248"
+  },
+  {
+    "conara": "10",
+    "sii": "10106",
+    "nombre_comuna": "CORRAL",
+    "codigo_tesoreria": "244"
+  },
+  {
+    "conara": "10",
+    "sii": "10107",
+    "nombre_comuna": "MAFIL",
+    "codigo_tesoreria": "246"
+  },
+  {
+    "conara": "10",
+    "sii": "10108",
+    "nombre_comuna": "PANGUIPULLI",
+    "codigo_tesoreria": "250"
+  },
+  {
+    "conara": "10",
+    "sii": "10109",
+    "nombre_comuna": "LA UNION",
+    "codigo_tesoreria": "251"
+  },
+  {
+    "conara": "10",
+    "sii": "10110",
+    "nombre_comuna": "PAILLACO",
+    "codigo_tesoreria": "252"
+  },
+  {
+    "conara": "10",
+    "sii": "10111",
+    "nombre_comuna": "RIO BUENO",
+    "codigo_tesoreria": "253"
+  },
+  {
+    "conara": "10",
+    "sii": "10112",
+    "nombre_comuna": "LAGO RANCO",
+    "codigo_tesoreria": "254"
+  },
+  {
+    "conara": "10",
+    "sii": "10201",
+    "nombre_comuna": "OSORNO",
+    "codigo_tesoreria": "255"
+  },
+  {
+    "conara": "10",
+    "sii": "10202",
+    "nombre_comuna": "SAN PABLO",
+    "codigo_tesoreria": "257"
+  },
+  {
+    "conara": "10",
+    "sii": "10203",
+    "nombre_comuna": "PUERTO OCTAY",
+    "codigo_tesoreria": "258"
+  },
+  {
+    "conara": "10",
+    "sii": "10204",
+    "nombre_comuna": "PUYEHUE",
+    "codigo_tesoreria": "256"
+  },
+  {
+    "conara": "10",
+    "sii": "10205",
+    "nombre_comuna": "RIO NEGRO",
+    "codigo_tesoreria": "259"
+  },
+  {
+    "conara": "10",
+    "sii": "10206",
+    "nombre_comuna": "PURRANQUE",
+    "codigo_tesoreria": "260"
+  },
+  {
+    "conara": "10",
+    "sii": "10207",
+    "nombre_comuna": "SAN JUAN DE LA COSTA",
+    "codigo_tesoreria": "307"
+  },
+  {
+    "conara": "10",
+    "sii": "10301",
+    "nombre_comuna": "PUERTO MONTT",
+    "codigo_tesoreria": "261"
+  },
+  {
+    "conara": "10",
+    "sii": "10302",
+    "nombre_comuna": "COCHAMO",
+    "codigo_tesoreria": "262"
+  },
+  {
+    "conara": "10",
+    "sii": "10303",
+    "nombre_comuna": "PUERTO VARAS",
+    "codigo_tesoreria": "266"
+  },
+  {
+    "conara": "10",
+    "sii": "10304",
+    "nombre_comuna": "FRESIA",
+    "codigo_tesoreria": "268"
+  },
+  {
+    "conara": "10",
+    "sii": "10305",
+    "nombre_comuna": "FRUTILLAR",
+    "codigo_tesoreria": "269"
+  },
+  {
+    "conara": "10",
+    "sii": "10306",
+    "nombre_comuna": "LLANQUIHUE",
+    "codigo_tesoreria": "267"
+  },
+  {
+    "conara": "10",
+    "sii": "10307",
+    "nombre_comuna": "MAULLIN",
+    "codigo_tesoreria": "263"
+  },
+  {
+    "conara": "10",
+    "sii": "10308",
+    "nombre_comuna": "LOS MUERMOS",
+    "codigo_tesoreria": "264"
+  },
+  {
+    "conara": "10",
+    "sii": "10309",
+    "nombre_comuna": "CALBUCO",
+    "codigo_tesoreria": "265"
+  },
+  {
+    "conara": "10",
+    "sii": "10401",
+    "nombre_comuna": "CASTRO",
+    "codigo_tesoreria": "270"
+  },
+  {
+    "conara": "10",
+    "sii": "10402",
+    "nombre_comuna": "CHONCHI",
+    "codigo_tesoreria": "271"
+  },
+  {
+    "conara": "10",
+    "sii": "10403",
+    "nombre_comuna": "QUEILEN",
+    "codigo_tesoreria": "272"
+  },
+  {
+    "conara": "10",
+    "sii": "10404",
+    "nombre_comuna": "QUELLON",
+    "codigo_tesoreria": "273"
+  },
+  {
+    "conara": "10",
+    "sii": "10405",
+    "nombre_comuna": "PUQUELDON",
+    "codigo_tesoreria": "274"
+  },
+  {
+    "conara": "10",
+    "sii": "10406",
+    "nombre_comuna": "ANCUD",
+    "codigo_tesoreria": "277"
+  },
+  {
+    "conara": "10",
+    "sii": "10407",
+    "nombre_comuna": "QUEMCHI",
+    "codigo_tesoreria": "278"
+  },
+  {
+    "conara": "10",
+    "sii": "10408",
+    "nombre_comuna": "DALCAHUE",
+    "codigo_tesoreria": "279"
+  },
+  {
+    "conara": "10",
+    "sii": "10410",
+    "nombre_comuna": "CURACO DE VELEZ",
+    "codigo_tesoreria": "276"
+  },
+  {
+    "conara": "10",
+    "sii": "10415",
+    "nombre_comuna": "QUINCHAO",
+    "codigo_tesoreria": "275"
+  },
+  {
+    "conara": "10",
+    "sii": "10501",
+    "nombre_comuna": "CHAITEN",
+    "codigo_tesoreria": "280"
+  },
+  {
+    "conara": "10",
+    "sii": "10502",
+    "nombre_comuna": "HUALAIHUE",
+    "codigo_tesoreria": "308"
+  },
+  {
+    "conara": "10",
+    "sii": "10503",
+    "nombre_comuna": "FUTALEUFU",
+    "codigo_tesoreria": "281"
+  },
+  {
+    "conara": "10",
+    "sii": "10504",
+    "nombre_comuna": "PALENA",
+    "codigo_tesoreria": "282"
+  },
+  {
+    "conara": "11",
+    "sii": "11101",
+    "nombre_comuna": "AYSEN",
+    "codigo_tesoreria": "285"
+  },
+  {
+    "conara": "11",
+    "sii": "11102",
+    "nombre_comuna": "CISNES",
+    "codigo_tesoreria": "286"
+  },
+  {
+    "conara": "11",
+    "sii": "11104",
+    "nombre_comuna": "GUAITECAS",
+    "codigo_tesoreria": "309"
+  },
+  {
+    "conara": "11",
+    "sii": "11201",
+    "nombre_comuna": "CHILE CHICO",
+    "codigo_tesoreria": "287"
+  },
+  {
+    "conara": "11",
+    "sii": "11203",
+    "nombre_comuna": "RIO IBANEZ",
+    "codigo_tesoreria": "288"
+  },
+  {
+    "conara": "11",
+    "sii": "11301",
+    "nombre_comuna": "COCHRANE",
+    "codigo_tesoreria": "289"
+  },
+  {
+    "conara": "11",
+    "sii": "11302",
+    "nombre_comuna": "OHIGGINS",
+    "codigo_tesoreria": "310"
+  },
+  {
+    "conara": "11",
+    "sii": "11303",
+    "nombre_comuna": "TORTEL",
+    "codigo_tesoreria": "311"
+  },
+  {
+    "conara": "11",
+    "sii": "11401",
+    "nombre_comuna": "COYHAIQUE",
+    "codigo_tesoreria": "284"
+  },
+  {
+    "conara": "11",
+    "sii": "11402",
+    "nombre_comuna": "LAGO VERDE",
+    "codigo_tesoreria": "312"
+  },
+  {
+    "conara": "12",
+    "sii": "12101",
+    "nombre_comuna": "NATALES",
+    "codigo_tesoreria": "291"
+  },
+  {
+    "conara": "12",
+    "sii": "12103",
+    "nombre_comuna": "TORRES DEL PAINE",
+    "codigo_tesoreria": "313"
+  },
+  {
+    "conara": "12",
+    "sii": "12202",
+    "nombre_comuna": "RIO VERDE",
+    "codigo_tesoreria": "314"
+  },
+  {
+    "conara": "12",
+    "sii": "12204",
+    "nombre_comuna": "SAN GREGORIO",
+    "codigo_tesoreria": "315"
+  },
+  {
+    "conara": "12",
+    "sii": "12205",
+    "nombre_comuna": "PUNTA ARENAS",
+    "codigo_tesoreria": "290"
+  },
+  {
+    "conara": "12",
+    "sii": "12206",
+    "nombre_comuna": "LAGUNA BLANCA",
+    "codigo_tesoreria": "316"
+  },
+  {
+    "conara": "12",
+    "sii": "12301",
+    "nombre_comuna": "PORVENIR",
+    "codigo_tesoreria": "292"
+  },
+  {
+    "conara": "12",
+    "sii": "12302",
+    "nombre_comuna": "PRIMAVERA",
+    "codigo_tesoreria": "317"
+  },
+  {
+    "conara": "12",
+    "sii": "12304",
+    "nombre_comuna": "TIMAUKEL",
+    "codigo_tesoreria": "318"
+  },
+  {
+    "conara": "12",
+    "sii": "12401",
+    "nombre_comuna": "CABO DE HORNOS",
+    "codigo_tesoreria": "319"
+  },
+  {
+    "conara": "13",
+    "sii": "13101",
+    "nombre_comuna": "SANTIAGO",
+    "codigo_tesoreria": "070"
+  },
+  {
+    "conara": "13",
+    "sii": "13134",
+    "nombre_comuna": "SANTIAGO OESTE",
+    "codigo_tesoreria": "073"
+  },
+  {
+    "conara": "13",
+    "sii": "13135",
+    "nombre_comuna": "SANTIAGO SUR",
+    "codigo_tesoreria": "084"
+  },
+  {
+    "conara": "13",
+    "sii": "13159",
+    "nombre_comuna": "RECOLETA",
+    "codigo_tesoreria": "329"
+  },
+  {
+    "conara": "13",
+    "sii": "13167",
+    "nombre_comuna": "INDEPENDENCIA",
+    "codigo_tesoreria": "330"
+  },
+  {
+    "conara": "14",
+    "sii": "14107",
+    "nombre_comuna": "QUINTA NORMAL",
+    "codigo_tesoreria": "081"
+  },
+  {
+    "conara": "14",
+    "sii": "14109",
+    "nombre_comuna": "MAIPU",
+    "codigo_tesoreria": "094"
+  },
+  {
+    "conara": "14",
+    "sii": "14111",
+    "nombre_comuna": "PUDAHUEL",
+    "codigo_tesoreria": "082"
+  },
+  {
+    "conara": "14",
+    "sii": "14113",
+    "nombre_comuna": "RENCA",
+    "codigo_tesoreria": "077"
+  },
+  {
+    "conara": "14",
+    "sii": "14114",
+    "nombre_comuna": "QUILICURA",
+    "codigo_tesoreria": "079"
+  },
+  {
+    "conara": "14",
+    "sii": "14127",
+    "nombre_comuna": "CONCHALI",
+    "codigo_tesoreria": "075"
+  },
+  {
+    "conara": "14",
+    "sii": "14155",
+    "nombre_comuna": "LO PRADO",
+    "codigo_tesoreria": "325"
+  },
+  {
+    "conara": "14",
+    "sii": "14156",
+    "nombre_comuna": "CERRO NAVIA",
+    "codigo_tesoreria": "324"
+  },
+  {
+    "conara": "14",
+    "sii": "14157",
+    "nombre_comuna": "ESTACION CENTRAL",
+    "codigo_tesoreria": "328"
+  },
+  {
+    "conara": "14",
+    "sii": "14158",
+    "nombre_comuna": "HUECHURABA",
+    "codigo_tesoreria": "334"
+  },
+  {
+    "conara": "14",
+    "sii": "14166",
+    "nombre_comuna": "CERRILLOS",
+    "codigo_tesoreria": "333"
+  },
+  {
+    "conara": "14",
+    "sii": "14201",
+    "nombre_comuna": "COLINA",
+    "codigo_tesoreria": "076"
+  },
+  {
+    "conara": "14",
+    "sii": "14202",
+    "nombre_comuna": "LAMPA",
+    "codigo_tesoreria": "078"
+  },
+  {
+    "conara": "14",
+    "sii": "14203",
+    "nombre_comuna": "TIL-TIL",
+    "codigo_tesoreria": "080"
+  },
+  {
+    "conara": "14",
+    "sii": "14501",
+    "nombre_comuna": "TALAGANTE",
+    "codigo_tesoreria": "086"
+  },
+  {
+    "conara": "14",
+    "sii": "14502",
+    "nombre_comuna": "ISLA DE MAIPO",
+    "codigo_tesoreria": "087"
+  },
+  {
+    "conara": "14",
+    "sii": "14503",
+    "nombre_comuna": "EL MONTE",
+    "codigo_tesoreria": "089"
+  },
+  {
+    "conara": "14",
+    "sii": "14504",
+    "nombre_comuna": "PENAFLOR",
+    "codigo_tesoreria": "085"
+  },
+  {
+    "conara": "14",
+    "sii": "14505",
+    "nombre_comuna": "PADRE HURTADO",
+    "codigo_tesoreria": "339"
+  },
+  {
+    "conara": "14",
+    "sii": "14601",
+    "nombre_comuna": "MELIPILLA",
+    "codigo_tesoreria": "088"
+  },
+  {
+    "conara": "14",
+    "sii": "14602",
+    "nombre_comuna": "MARIA PINTO",
+    "codigo_tesoreria": "090"
+  },
+  {
+    "conara": "14",
+    "sii": "14603",
+    "nombre_comuna": "CURACAVI",
+    "codigo_tesoreria": "083"
+  },
+  {
+    "conara": "14",
+    "sii": "14604",
+    "nombre_comuna": "SAN PEDRO",
+    "codigo_tesoreria": "108"
+  },
+  {
+    "conara": "14",
+    "sii": "14605",
+    "nombre_comuna": "ALHUE",
+    "codigo_tesoreria": "109"
+  },
+  {
+    "conara": "15",
+    "sii": "15103",
+    "nombre_comuna": "PROVIDENCIA",
+    "codigo_tesoreria": "072"
+  },
+  {
+    "conara": "15",
+    "sii": "15105",
+    "nombre_comuna": "NUNOA",
+    "codigo_tesoreria": "091"
+  },
+  {
+    "conara": "15",
+    "sii": "15108",
+    "nombre_comuna": "LAS CONDES",
+    "codigo_tesoreria": "071"
+  },
+  {
+    "conara": "15",
+    "sii": "15128",
+    "nombre_comuna": "LA FLORIDA",
+    "codigo_tesoreria": "093"
+  },
+  {
+    "conara": "15",
+    "sii": "15132",
+    "nombre_comuna": "LA REINA",
+    "codigo_tesoreria": "092"
+  },
+  {
+    "conara": "15",
+    "sii": "15151",
+    "nombre_comuna": "MACUL",
+    "codigo_tesoreria": "323"
+  },
+  {
+    "conara": "15",
+    "sii": "15152",
+    "nombre_comuna": "PENALOLEN",
+    "codigo_tesoreria": "322"
+  },
+  {
+    "conara": "15",
+    "sii": "15160",
+    "nombre_comuna": "VITACURA",
+    "codigo_tesoreria": "331"
+  },
+  {
+    "conara": "15",
+    "sii": "15161",
+    "nombre_comuna": "LO BARNECHEA",
+    "codigo_tesoreria": "332"
+  },
+  {
+    "conara": "16",
+    "sii": "16106",
+    "nombre_comuna": "SAN MIGUEL",
+    "codigo_tesoreria": "095"
+  },
+  {
+    "conara": "16",
+    "sii": "16110",
+    "nombre_comuna": "LA CISTERNA",
+    "codigo_tesoreria": "096"
+  },
+  {
+    "conara": "16",
+    "sii": "16131",
+    "nombre_comuna": "LA GRANJA",
+    "codigo_tesoreria": "097"
+  },
+  {
+    "conara": "16",
+    "sii": "16153",
+    "nombre_comuna": "SAN RAMON",
+    "codigo_tesoreria": "326"
+  },
+  {
+    "conara": "16",
+    "sii": "16154",
+    "nombre_comuna": "LA PINTANA",
+    "codigo_tesoreria": "327"
+  },
+  {
+    "conara": "16",
+    "sii": "16162",
+    "nombre_comuna": "PEDRO AGUIRRE CERDA",
+    "codigo_tesoreria": "336"
+  },
+  {
+    "conara": "16",
+    "sii": "16163",
+    "nombre_comuna": "SAN JOAQUIN",
+    "codigo_tesoreria": "335"
+  },
+  {
+    "conara": "16",
+    "sii": "16164",
+    "nombre_comuna": "LO ESPEJO",
+    "codigo_tesoreria": "337"
+  },
+  {
+    "conara": "16",
+    "sii": "16165",
+    "nombre_comuna": "EL BOSQUE",
+    "codigo_tesoreria": "338"
+  },
+  {
+    "conara": "16",
+    "sii": "16301",
+    "nombre_comuna": "PUENTE ALTO",
+    "codigo_tesoreria": "100"
+  },
+  {
+    "conara": "16",
+    "sii": "16302",
+    "nombre_comuna": "PIRQUE",
+    "codigo_tesoreria": "101"
+  },
+  {
+    "conara": "16",
+    "sii": "16303",
+    "nombre_comuna": "SAN JOSE DE MAIPO",
+    "codigo_tesoreria": "102"
+  },
+  {
+    "conara": "16",
+    "sii": "16401",
+    "nombre_comuna": "SAN BERNARDO",
+    "codigo_tesoreria": "098"
+  },
+  {
+    "conara": "16",
+    "sii": "16402",
+    "nombre_comuna": "CALERA DE TANGO",
+    "codigo_tesoreria": "099"
+  },
+  {
+    "conara": "16",
+    "sii": "16403",
+    "nombre_comuna": "BUIN",
+    "codigo_tesoreria": "103"
+  },
+  {
+    "conara": "16",
+    "sii": "16404",
+    "nombre_comuna": "PAINE",
+    "codigo_tesoreria": "104"
+  }
+] 

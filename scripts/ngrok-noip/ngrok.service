@@ -1,0 +1,14 @@
+[Unit]
+Description=Ngrok Service
+After=network.target
+
+[Service]
+Type=simple
+User=rodrigod
+WorkingDirectory=/home/rodrigod/proyectos-nodejs/botito
+ExecStart=/usr/bin/ngrok http --region=us 3001
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target 

@@ -1,0 +1,19 @@
+2025/06/16-22:53:37.117 14f68c Reusing MANIFEST /home/rodrigod/proyectos-nodejs/botito/wwjs_auth_info/session-botito-persistente/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/06/16-22:53:37.119 14f68c Recovering log #1096
+2025/06/16-22:53:37.175 14f68c Reusing old log /home/rodrigod/proyectos-nodejs/botito/wwjs_auth_info/session-botito-persistente/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/001096.log 
+2025/06/16-22:53:39.802 14f68c Level-0 table #1104: started
+2025/06/16-22:53:39.823 14f68c Level-0 table #1104: 152042 bytes OK
+2025/06/16-22:53:39.830 14f68c Delete type=0 #1096
+2025/06/16-22:53:39.831 14f68c Manual compaction at level-0 from ' \x0c\x01\x00\x00\x00' @ 72057594037927935 : 1 .. ' \x0d\x01\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/06/16-22:53:47.539 14f68c Compacting 1@1 + 4@2 files
+2025/06/16-22:53:47.819 14f68c Generated table #1105@1: 80737 keys, 2241498 bytes
+2025/06/16-22:53:48.032 14f68c Generated table #1106@1: 20891 keys, 2179180 bytes
+2025/06/16-22:53:48.335 14f68c Generated table #1107@1: 67650 keys, 2207700 bytes
+2025/06/16-22:53:48.530 14f68c Generated table #1108@1: 65002 keys, 1285822 bytes
+2025/06/16-22:53:48.530 14f68c Compacted 1@1 + 4@2 files => 7914200 bytes
+2025/06/16-22:53:48.536 14f68c compacted to: files[ 0 0 4 0 0 0 0 ]
+2025/06/16-22:53:48.538 14f68c Delete type=2 #1100
+2025/06/16-22:53:48.538 14f68c Delete type=2 #1104
+2025/06/16-22:53:48.539 14f68c Delete type=2 #1101
+2025/06/16-22:53:48.539 14f68c Delete type=2 #1099
+2025/06/16-22:53:48.539 14f68c Delete type=2 #1098

@@ -1,0 +1,28 @@
+nohup: ignoring input
+INFO: Datos de geolocalización cargados y normalizados. 346 entradas de comunas procesadas. Mapa comuna-región creado con 346 entradas.
+INFO: Cliente de Google Gemini inicializado correctamente con el modelo gemini-2.0-flash.
+INFO: IDs de administradores cargados: [ '56945803799@c.us' ]
+Iniciando servidor...
+Conexión a MySQL establecida correctamente.
+Conexión a la base de datos verificada.
+node:events:502
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3001
+    at Server.setupListenHandle [as _listen2] (node:net:1908:16)
+    at listenInCluster (node:net:1965:12)
+    at Server.listen (node:net:2067:7)
+    at startServer (/home/rodrigod/botito/server.js:50:16)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1944:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '::',
+  port: 3001
+}
+
+Node.js v20.19.2
