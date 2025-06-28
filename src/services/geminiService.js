@@ -1,4 +1,5 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const axios = require("axios");
 
 // Acceder a su clave de API como una variable de entorno
 const API_KEY = process.env.GEMINI_API_KEY; // Asegúrate de tener esta variable en tu .env
@@ -93,9 +94,63 @@ Formato de salida JSON (solo el JSON):
   }
 }
 
+/**
+ * Extrae los detalles de una publicación (propiedad o solicitud) desde un texto libre.
+ * @param {string} text - El texto proporcionado por el usuario.
+ * @param {string} publicationType - El tipo de publicación ('Propiedad' o 'Solicitud').
+ * @returns {Promise<Object>} Un objeto con los detalles extraídos.
+ */
+async function extractPublicationDetails(text, publicationType) {
+  const systemPrompt = `Eres un asistente experto en bienes raíces para la plataforma Konecte. Tu tarea es extraer detalles estructurados de un texto en lenguaje natural para crear una publicación. El usuario quiere publicar una ${publicationType}.
+
+Analiza el siguiente texto y extrae la información en un objeto JSON. Las claves del JSON deben ser:
+- "titulo": Un título corto y descriptivo.
+- "operacion": Debe ser "Venta" o "Arriendo". Si es una solicitud, puede ser "Compra" o "Arriendo".
+- "categoria": El tipo de propiedad (Ej: "Casa", "Departamento", "Oficina", "Terreno", "Local Comercial").
+- "comuna": La comuna donde se ubica o se busca la propiedad.
+- "dormitorios": (Opcional) El número de dormitorios como un entero.
+- "banos": (Opcional) El número de baños como un entero.
+- "valor": El precio como un número. Si se menciona "UF", mantén solo el número.
+- "moneda": Debe ser "CLP" o "UF".
+- "descripcion": El texto completo o un resumen de la descripción proporcionada.
+
+Si un campo no se encuentra, omítelo en el JSON. Asegúrate de que "operacion" y "categoria" tengan valores consistentes. Si el usuario indica un presupuesto para una solicitud, usa "valor" para ese dato.
+
+Ejemplo para una Propiedad:
+Texto: "Vendo depto en Las Condes, 2d, 2b, living comedor, cocina equipada. Valor 5.000 UF. Título: Acogedor depto familiar. Es ideal para familias"
+JSON: {"titulo": "Acogedor depto familiar", "operacion": "Venta", "categoria": "Departamento", "comuna": "Las Condes", "dormitorios": 2, "banos": 2, "valor": 5000, "moneda": "UF", "descripcion": "Vendo depto en Las Condes, 2d, 2b, living comedor, cocina equipada. Valor 5.000 UF. Es ideal para familias"}
+
+Ejemplo para una Solicitud:
+Texto: "Busco arriendo de casa en Ñuñoa o Providencia. Presupuesto máximo $800.000. Necesito 3 dormitorios para mi familia."
+JSON: {"titulo": "Busco arriendo para familia", "operacion": "Arriendo", "categoria": "Casa", "comuna": "Ñuñoa, Providencia", "dormitorios": 3, "valor": 800000, "moneda": "CLP", "descripcion": "Busco arriendo de casa en Ñuñoa o Providencia. Presupuesto máximo $800.000. Necesito 3 dormitorios para mi familia."}
+
+Ahora, analiza el siguiente texto del usuario. Responde únicamente con el objeto JSON.`;
+
+  try {
+    const response = await axios.post(GEMINI_API_URL, {
+      contents: [{
+        parts: [{ text: systemPrompt }, { text }]
+      }],
+      generationConfig: {
+        response_mime_type: "application/json",
+        temperature: 0.2,
+      },
+    });
+
+    const jsonResponse = response.data.candidates[0].content.parts[0].text;
+    console.log('[GEMINI] Respuesta JSON recibida para publicación:', jsonResponse);
+    return JSON.parse(jsonResponse);
+
+  } catch (error) {
+    console.error('Error en la respuesta de Gemini para publicación:', error.response ? error.response.data : error.message);
+    throw new Error('Error al comunicarse con la API de Gemini para la publicación');
+  }
+}
+
 // Inicializar el cliente de Gemini al cargar el módulo
 initializeGeminiClient();
 
 module.exports = {
-  extractPropertyDetails
+  extractPropertyDetails,
+  extractPublicationDetails,
 };

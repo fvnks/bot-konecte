@@ -7,9 +7,7 @@ const axios = require('axios'); // Importar axios
 const geminiService = require('./geminiService');
 const googleSheetsService = require('./googleSheetsService');
 const { handleCommand } = require('./commandHandler');
-
-// Almacenamiento temporal para el contexto de la conversación
-const conversationContext = new Map();
+const { conversationContext } = require('./conversationStateService'); // Usar estado centralizado
 
 /**
  * Procesa un mensaje y devuelve la respuesta adecuada del bot
@@ -74,11 +72,177 @@ async function getBotReply({ text, from, client, senderName }) {
   console.log(`[BOT-REPLY] Texto limpio: "${cleanedText}"`);
 
   // Obtener el contexto de la conversación actual
-  const userContext = conversationContext.get(from) || { lastQuestion: null, searchCriteria: null };
+  const userContext = conversationContext.get(from) || { lastQuestion: null, publicationData: {} };
   console.log(`[BOT-REPLY] Contexto actual para ${from}:`, userContext);
 
-  // Verificar si estamos esperando una respuesta específica
-  if (userContext.lastQuestion === 'createAlert') {
+  // --- INICIO: Flujo de Publicación Conversacional ---
+
+  // Etapa 1: Preguntar tipo de publicación (Propiedad o Solicitud)
+  if (userContext.lastQuestion === 'awaiting_publication_type') {
+    if (cleanedText.includes('1') || cleanedText.includes('propiedad')) {
+        userContext.lastQuestion = 'prop_awaiting_title';
+        userContext.publicationData = { tipo: 'propiedad' }; // Reiniciar datos
+        conversationContext.set(from, userContext);
+        return `¡Excelente! Vamos a publicar una *Propiedad*.
+
+Primero, dime el *título* para tu publicación.
+(Ej: Lindo departamento con vista al mar en Concón)`;
+    } else if (cleanedText.includes('2') || cleanedText.includes('solicitud')) {
+        // Flujo de solicitud (simplificado por ahora)
+        userContext.lastQuestion = 'awaiting_request_details';
+        userContext.publicationData = { tipo: 'solicitud' };
+        conversationContext.set(from, userContext);
+        return `¡Entendido! Para publicar tu *Solicitud*, por favor describe en un solo mensaje qué buscas, incluyendo tipo de propiedad, comuna y presupuesto.`;
+    } else {
+        return 'Por favor, elige una opción válida: *1* para Propiedad o *2* para Solicitud.';
+    }
+  }
+
+  // Etapa 2: Recopilar título de la propiedad
+  else if (userContext.lastQuestion === 'prop_awaiting_title') {
+    userContext.publicationData.titulo = text; // Guardar texto original con mayúsculas
+    userContext.lastQuestion = 'prop_awaiting_description';
+    conversationContext.set(from, userContext);
+    return `¡Perfecto! Ahora, por favor, dame una *descripción detallada* de tu propiedad.`;
+  }
+
+  // Etapa 3: Recopilar descripción
+  else if (userContext.lastQuestion === 'prop_awaiting_description') {
+    userContext.publicationData.descripcion = text;
+    userContext.lastQuestion = 'prop_awaiting_transaction';
+    conversationContext.set(from, userContext);
+    return `¡Muy bien! ¿La propiedad es para *Venta* o *Arriendo*?`;
+  }
+
+  // Etapa 4: Recopilar tipo de transacción
+  else if (userContext.lastQuestion === 'prop_awaiting_transaction') {
+    userContext.publicationData.operacion = text;
+    userContext.lastQuestion = 'prop_awaiting_category';
+    conversationContext.set(from, userContext);
+    return `Entendido. Ahora dime la *categoría* de la propiedad (Ej: Casa, Departamento, Oficina, Terreno, etc.)`;
+  }
+
+  // Etapa 5: Recopilar categoría
+  else if (userContext.lastQuestion === 'prop_awaiting_category') {
+    userContext.publicationData.categoria = text;
+    userContext.lastQuestion = 'prop_awaiting_price';
+    conversationContext.set(from, userContext);
+    return `Genial. ¿Cuál es el *precio* de la propiedad? Por favor, indícalo junto con la moneda (Ej: 5000 UF o 120000000 CLP)`;
+  }
+
+  // Etapa 6: Recopilar precio y moneda
+  else if (userContext.lastQuestion === 'prop_awaiting_price') {
+    const priceText = cleanedText;
+    const priceMatch = priceText.match(/([\d.,]+)/);
+    userContext.publicationData.valor = priceMatch ? parseFloat(priceMatch[1].replace(/[,.]/g, '')) : 0;
+    userContext.publicationData.moneda = priceText.toLowerCase().includes('uf') ? 'UF' : 'CLP';
+    userContext.lastQuestion = 'prop_awaiting_location';
+    conversationContext.set(from, userContext);
+    return `¡Anotado! Ahora, por favor, dime la *comuna* donde se encuentra la propiedad.`;
+  }
+
+  // Etapa 7: Recopilar ubicación
+  else if (userContext.lastQuestion === 'prop_awaiting_location') {
+    userContext.publicationData.comuna = text;
+    userContext.lastQuestion = 'prop_awaiting_area';
+    conversationContext.set(from, userContext);
+    return `Ok. ¿Cuál es la *superficie total* en metros cuadrados? (Solo el número)`;
+  }
+
+  // Etapa 8: Recopilar superficie
+  else if (userContext.lastQuestion === 'prop_awaiting_area') {
+    userContext.publicationData.superficie = parseInt(cleanedText, 10) || 0;
+    userContext.lastQuestion = 'prop_awaiting_rooms';
+    conversationContext.set(from, userContext);
+    return `Casi listos. Por favor, indícame el número de *dormitorios, baños y estacionamientos*, separados por comas. (Ej: 3, 2, 1)`;
+  }
+
+  // Etapa 9: Recopilar dormitorios, baños, estacionamientos
+  else if (userContext.lastQuestion === 'prop_awaiting_rooms') {
+    const parts = cleanedText.split(',').map(p => parseInt(p.trim(), 10) || 0);
+    userContext.publicationData.dormitorios = parts[0] || 0;
+    userContext.publicationData.banos = parts[1] || 0;
+    userContext.publicationData.estacionamientos = parts[2] || 0;
+    userContext.lastQuestion = 'prop_awaiting_features';
+    conversationContext.set(from, userContext);
+    return `¡Última pregunta! Menciona algunas *características adicionales* separadas por comas (Ej: Piscina, Quincho, Bodega). Si no tiene, escribe "Ninguna".`;
+  }
+
+  // Etapa 10: Recopilar características y pedir confirmación
+  else if (userContext.lastQuestion === 'prop_awaiting_features') {
+    userContext.publicationData.caracteristicas = text;
+    userContext.lastQuestion = 'prop_awaiting_confirmation';
+    conversationContext.set(from, userContext);
+
+    const data = userContext.publicationData;
+    const summary = `¡Hemos terminado! Por favor, revisa que toda la información sea correcta:\n
+*Título:* ${data.titulo}
+*Operación:* ${data.operacion}
+*Categoría:* ${data.categoria}
+*Comuna:* ${data.comuna}
+*Precio:* ${data.valor} ${data.moneda}
+*Superficie:* ${data.superficie} m²
+*Dormitorios:* ${data.dormitorios}
+*Baños:* ${data.banos}
+*Estacionamientos:* ${data.estacionamientos}
+*Características:* ${data.caracteristicas}
+*Descripción:* ${data.descripcion}\n
+¿Es todo correcto? Responde *Sí* para publicar o *No* para cancelar.`;
+    return summary;
+  }
+  
+  // Etapa 11: Confirmación final y publicación
+  else if (userContext.lastQuestion === 'prop_awaiting_confirmation') {
+    if (cleanedText === 'si' || cleanedText === 'sí') {
+        try {
+            const konecteApiUrl = process.env.KONECTE_API_URL || 'https://konecte.vercel.app';
+            const rawPhone = from.split('@')[0];
+            const userPhone = rawPhone.startsWith('+') ? rawPhone : `+${rawPhone}`;
+
+            const payload = {
+                ...userContext.publicationData,
+                userPhone: userPhone,
+                source: 'whatsapp'
+            };
+            
+            console.log('[BOT-REPLY] Enviando payload a Konecte:', JSON.stringify(payload));
+            await axios.post(`${konecteApiUrl}/api/listings`, payload);
+            
+            conversationContext.delete(from);
+            return '¡Excelente! ✨ Tu publicación ha sido creada exitosamente en Konecte. La verás reflejada en el sitio web muy pronto.';
+        } catch(error) {
+            console.error('[BOT-REPLY] Error al enviar la publicación a Konecte:', error.response ? error.response.data : error.message);
+            conversationContext.delete(from);
+            return '❌ Ocurrió un error al conectar con Konecte. No se pudo crear tu publicación. Por favor, intenta más tarde.';
+        }
+    } else {
+        conversationContext.delete(from);
+        return 'Entendido. He cancelado la publicación. Si quieres empezar de nuevo, solo dímelo.';
+    }
+  }
+
+  // Flujo de publicación para solicitudes (simplificado)
+  else if (userContext.lastQuestion === 'awaiting_request_details') {
+    try {
+        const extractedDetails = await geminiService.extractPublicationDetails(text, 'Solicitud');
+        const konecteApiUrl = process.env.KONECTE_API_URL || 'https://konecte.vercel.app';
+        const rawPhone = from.split('@')[0];
+        const userPhone = rawPhone.startsWith('+') ? rawPhone : `+${rawPhone}`;
+        const payload = { ...extractedDetails, tipo: 'solicitud', userPhone, source: 'whatsapp' };
+        
+        await axios.post(`${konecteApiUrl}/api/listings`, payload);
+        conversationContext.delete(from);
+        return '¡Perfecto! ✨ Tu solicitud ha sido publicada en Konecte.';
+    } catch(error) {
+        console.error('[BOT-REPLY] Error al procesar publicación de solicitud:', error.response ? error.response.data : error.message);
+        conversationContext.delete(from);
+        return '❌ Hubo un error al procesar tu solicitud. Por favor, intenta más tarde.';
+    }
+  }
+  // --- FIN: Flujo de Publicación Conversacional ---
+
+  // Verificar si estamos esperando una respuesta específica (ej: alerta)
+  else if (userContext.lastQuestion === 'createAlert') {
     // El usuario está respondiendo a la pregunta sobre crear una alerta
     if (cleanedText === 'si' || cleanedText === 'sí' || cleanedText === 's' || cleanedText === 'yes') {
       // Actualizar el contexto
@@ -121,41 +285,23 @@ async function getBotReply({ text, from, client, senderName }) {
 
   // 3. Manejar opciones de menú (buscar/ofrecer) con sinónimos
   const buscarKeywords = ['1', 'buscar', 'busco', 'búsqueda', 'busqueda', 'buscar una propiedad'];
-  const ofrecerKeywords = ['2', 'ofrecer', 'ofrezco', 'ofresca', 'ofrecer una propiedad'];
+  const ofrecerKeywords = ['2', 'publicar', 'ofrecer', 'ofrezco', 'ofresca', 'ofrecer una propiedad'];
 
-  if (buscarKeywords.includes(lowerText)) {
-    return `¡Genial! Para ayudarte a encontrar tu lugar ideal, por favor, descríbeme lo que buscas. Mientras más detalles me des, mejor. Puedes guiarte con este formato:
+  if (buscarKeywords.includes(cleanedText)) {
+    // Establecer el contexto para la búsqueda inteligente
+    const userContext = conversationContext.get(from) || {};
+    userContext.lastQuestion = 'awaiting_search_query';
+    conversationContext.set(from, userContext);
 
-Busco/Ofrezco: Busco
-Tipo de operación: Arriendo / Compra
-Tipo de propiedad: []
-Región: []
-Ciudad: []
-Comunas preferidas: []
-Dormitorios mínimos: []
-Baños mínimos: []
-Estacionamiento requerido: Sí / No / Indiferente
-Bodega: Sí / No / Indiferente
-Presupuesto máximo: []
-Moneda: CLP / UF
-Gastos comunes incluidos?: Sí / No / Indiferente
-Metros cuadrados mínimos: []`;
+    return `¡Genial! Para ayudarte a encontrar lo que buscas, solo tienes que decírmelo. Por ejemplo: "busco casa en arriendo en viña del mar con 3 dormitorios".`;
   }
 
-  if (ofrecerKeywords.includes(lowerText)) {
-    return `¡Perfecto! Para publicar tu propiedad, por favor, envíame todos los detalles. Para que no se me escape nada, idealmente sigue este formato:
-
-Busco/Ofrezco: Ofrezco
-Tipo de operación: Venta / Arriendo
-Tipo de propiedad: []
-Región: []
-Ciudad: []
-Comuna: []
-Dormitorios: []
-Baños: []
-Estacionamiento: Sí / No
-Bodega: Sí / No
-Valor: []`;
+  if (ofrecerKeywords.includes(cleanedText)) {
+    // Iniciar el flujo de publicación conversacional
+    const userContext = conversationContext.get(from) || {};
+    userContext.lastQuestion = 'awaiting_publication_type';
+    conversationContext.set(from, userContext);
+    return `¡Perfecto! Vamos a publicar.\n\n¿Qué deseas publicar?\n1. 🏡 Una Propiedad\n2. 📝 Una Solicitud`;
   }
 
   // 4. Responder a confirmaciones simples (sí/no)
@@ -183,10 +329,12 @@ Valor: []`;
   }
 
   // 5. Búsqueda inteligente con IA/Gemini
-  if (lowerText.includes('busco') || lowerText.includes('ofrezco') || 
+  // IMPORTANTE: Esta lógica solo se debe activar si no estamos en medio de otra conversación.
+  if (!userContext.lastQuestion && 
+      (lowerText.includes('busco') || lowerText.includes('ofrezco') || 
       lowerText.includes('buscar') || lowerText.includes('ofrecer') ||
       lowerText.includes('departamento') || lowerText.includes('casa') || 
-      lowerText.includes('oficina') || lowerText.includes('propiedad')) {
+      lowerText.includes('oficina') || lowerText.includes('propiedad'))) {
     try {
       // Extraer criterios con Gemini
       const searchCriteria = await geminiService.extractPropertyDetails(cleanedText); // Pasar cleanedText a Gemini

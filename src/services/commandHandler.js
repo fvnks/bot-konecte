@@ -2,6 +2,9 @@ const os = require('os');
 const packageJson = require('../../package.json'); // Asegúrate que la ruta a tu package.json es correcta
 const IgnoredUser = require('../models/IgnoredUser');
 const { getWelcomeMessage } = require('./messageTemplates'); // Importar para !ayuda
+const { sendMessageToKonecte } = require('./whatsappService');
+const { isAdmin } = require('../utils/adminHelper');
+const { conversationContext } = require('./conversationStateService'); // Importar estado centralizado
 
 async function handleCommand(command, client, msg, isAdmin) {
     console.log(`[COMMAND-HANDLER] Comando recibido: "${command}"`);
@@ -33,12 +36,14 @@ async function handleCommand(command, client, msg, isAdmin) {
     }
 
     if (mainCommand === '!publicar') {
-        const reply = `¡Perfecto! Vamos a publicar.
-
-¿Qué deseas publicar?
-1. 🏡 Una Propiedad
-2. 📝 Una Solicitud`;
-        await client.sendMessage(formattedSenderId, reply);
+        const from = msg.from;
+        const userContext = conversationContext.get(from) || { publicationData: {} };
+        
+        userContext.lastQuestion = 'awaiting_publication_type';
+        conversationContext.set(from, userContext);
+        
+        const reply = `¡Perfecto! Vamos a publicar.\n\n¿Qué deseas publicar?\n1. 🏡 Una Propiedad\n2. 📝 Una Solicitud`;
+        await client.sendMessage(msg.from, reply);
         return true; // Comando manejado
     }
 
