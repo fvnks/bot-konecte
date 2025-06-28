@@ -6,7 +6,8 @@ const { testConnection, db } = require('./src/config/database');
 const { initWhatsAppClient, closeWhatsAppClient, getWhatsAppClient } = require('./src/services/whatsappService');
 const dashboardRoutes = require('./src/routes/dashboardRoutes');
 const webhooksRoutes = require('./src/routes/webhooksRoutes');
-const scheduledScrapingService = require('./src/services/scheduledScrapingService');
+// Eliminamos la importación del servicio de scraping
+// const scheduledScrapingService = require('./src/services/scheduledScrapingService');
 
 // Importar modelos para asegurar que se ejecute createTable() al inicio
 require('./src/models/DashboardUser');
@@ -93,9 +94,8 @@ async function startServer() {
                 } else {
                     console.error(`No se pudo inicializar el cliente de WhatsApp después de ${maxAttempts} intentos.`);
                 }
-
-                await scheduledScrapingService.initializeScheduledScraping();
-                console.log('Servicio de scraping programado inicializado.');
+                
+                console.log('Servidor API inicializado correctamente. No se usará scraping.');
             } catch (serviceError) {
                 console.error('Error al inicializar servicios post-arranque:', serviceError);
             }
